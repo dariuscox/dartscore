@@ -1,26 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Landing from './components/Landing';
+import Create from './components/Create';
+import Join from './components/Join';
+import Lobby from './components/Lobby';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => (
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <Switch>
+            <Route path="/" component={Landing} exact />
+            <Route path="/join" component={Join} exact />
+            <Route path="/create" component={Create} exact />
+            <Route path="/lobby" component={Lobby} exact />
+        </Switch>
+    </BrowserRouter>
+);
 
 export default App;
