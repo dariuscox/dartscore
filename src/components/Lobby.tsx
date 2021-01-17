@@ -23,7 +23,7 @@ const Lobby = () => {
                 <h2>Player 2</h2>
             </div>
             <div>
-                <JoinButton onClick={() => routeChange('/join')}>
+                <JoinButton onClick={() => routeChange('/game')}>
                     Play
                 </JoinButton>
             </div>
