@@ -2,9 +2,20 @@ import React from 'react';
 import { HomeTheme } from './Themes';
 import { JoinInput } from './Inputs';
 import { JoinButton } from './Buttons';
+import { useHistory } from 'react-router-dom';
 
 const Create = () => {
     var gameId = Math.random().toString(36).substr(2, 4).toUpperCase();
+
+    const history = useHistory();
+
+    const routeChange = (path: string) => {
+        history.push({
+            pathname: path,
+            state: { gameID: gameId },
+        });
+    };
+
     return (
         <HomeTheme>
             <div>
@@ -20,7 +31,9 @@ const Create = () => {
                 <JoinInput placeholder="Enter Your Name" />
             </div>
             <div>
-                <JoinButton>Play</JoinButton>
+                <JoinButton onClick={() => routeChange('/lobby')}>
+                    Play
+                </JoinButton>
             </div>
         </HomeTheme>
     );
