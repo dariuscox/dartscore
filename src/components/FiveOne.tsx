@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const FiveOneGame = styled.section`
+    //add legs
     text-align: center;
     background-color: #282c34;
     justify-content: center;
