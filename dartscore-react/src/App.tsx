@@ -4,6 +4,7 @@ import Landing from './components/Landing';
 import Create from './components/Create';
 import Join from './components/Join';
 import Lobby from './components/Lobby';
+import Game from './components/Game';
 import './App.css';
 
 const App = () => (
@@ -12,7 +13,12 @@ const App = () => (
             <Route path="/" component={Landing} exact />
             <Route path="/join" component={Join} exact />
             <Route path="/create" component={Create} exact />
-            <Route path="/lobby" component={Lobby} exact />
+            <Route
+                path="/lobby"
+                render={(props) => <Lobby {...props} />}
+                exact
+            />
+            <Route path="/game" component={Game} exact />
         </Switch>
     </BrowserRouter>
 );
