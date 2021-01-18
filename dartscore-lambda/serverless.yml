@@ -1,0 +1,44 @@
+service: dartscore-lambda
+
+provider:
+  name: aws
+  runtime: python3.8
+  role: arn:aws:iam::591331303527:role/dartscore-lambda-role
+  region: us-east-1
+
+package:
+  include:
+    - dependencies/**
+  exclude:
+    - .coverage
+    - .git
+    - .gitignore
+    - ez_setup.py
+    - MANIFEST.in
+    - requirements.pip
+    - setup.cfg
+    - setup.py
+    - test-requirements.pip
+    - docs/**
+    - reports/**
+    - test/**
+    - .tox/**
+    - node_modules/**
+
+functions:
+  generate_id:
+    handler: create.generate_id
+    description: Generates a new game id
+    events:
+      - http:
+          path: /generateid
+          method: GET
+          cors: true
+  create_game:
+    handler: create.create_game
+    description: Creates a game and adds it to the table
+    events:
+      - http:
+          path: /create
+          method: POST
+          cors: true
