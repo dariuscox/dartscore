@@ -3,7 +3,7 @@ service: dartscore-lambda
 provider:
   name: aws
   runtime: python3.8
-  role: arn:aws:iam::591331303527:role/dartscore-lambda-role
+  role: arn:aws:iam::AWSACCOUNT:role/dartscore-lambda-role
   region: us-east-1
 
 package:
