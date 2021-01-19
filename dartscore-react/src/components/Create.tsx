@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HomeTheme } from './Themes';
 import { JoinInput } from './Inputs';
 import { JoinButton } from './Buttons';
@@ -10,17 +10,20 @@ const Create = () => {
     const [player1, setPlayer1] = useState('');
     const [gameId, setGameId] = useState('');
 
-    if (!gameId) {
-        DartscoreService.generateGameId().then((res) => {
-            //getting called multiple times for some reason
-            const { game_id } = res;
-            if (!gameId) {
-                setGameId(game_id);
-                console.log(game_id);
-            }
-        });
-        // use api call to get game id
-    }
+    useEffect(() => {
+        if (!gameId) {
+            DartscoreService.generateGameId().then((res) => {
+                console.log('called');
+                //getting called multiple times for some reason
+                const { game_id } = res;
+                if (!gameId) {
+                    setGameId(game_id);
+                    console.log(game_id);
+                }
+            });
+            // use api call to get game id
+        }
+    }, [gameId]);
 
     const routeChange = (path: string) => {
         history.push({

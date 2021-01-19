@@ -3,8 +3,10 @@ service: dartscore-lambda
 provider:
   name: aws
   runtime: python3.8
-  role: arn:aws:iam::AWSACCOUNT:role/dartscore-lambda-role
+  role: arn:aws:iam::#{AWS::AccountId}:role/dartscore-lambda-role
   region: us-east-1
+  logs:
+    websocket: true
 
 package:
   include:
@@ -25,6 +27,10 @@ package:
     - .tox/**
     - node_modules/**
 
+plugins:
+  - serverless-pseudo-parameters
+
+
 functions:
   generate_id:
     handler: create.generate_id
@@ -42,3 +48,8 @@ functions:
           path: /create
           method: POST
           cors: true
+  socket:
+    handler: socket.lambda_handler
+    description: Lamdbda socket handler
+    events:
+      - websocket: $connect

@@ -1,9 +1,14 @@
 import json
 import random
 import string
+import logging
 
 import boto3
 from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 dynamodb = boto3.resource('dynamodb')
@@ -12,7 +17,7 @@ table = dynamodb.Table('dartscore')
 def generate_id(event, context):
     while True:
         game_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-        game_check = table.get_item(Key={'game_id': game_id, 'status': 'lobby'})
+        game_check = table.get_item(Key={'game_id': game_id})
         if not game_check.get('Item'):
             body = {
                 "game_id": game_id
@@ -33,12 +38,11 @@ def create_game(event, context):
     body = json.loads(event['body'])
     game_id = body.get('game_id')
     print(game_id)
-    player1 = body.get('player1')
-    print(player1)
     game = {
         'game_id': game_id,
         'status': 'lobby',
-        'player1': player1
+        'type' : 'cricket',
+        'players': []
     }
     print(game)
     try:
@@ -48,7 +52,6 @@ def create_game(event, context):
         
         body = {
             "game_id": game_id,
-            "player1": player1,
         }
         response = {
             "statusCode": 200,
@@ -60,24 +63,39 @@ def create_game(event, context):
         response = {"statusCode":500}
         return response
 
-def hello(event, context):
-    body = {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-        "input": event
-    }
-
-    response = {
-        "statusCode": 200,
-        "body": json.dumps(body)
-    }
-
-    return response
-
-    # Use this code if you don't use the http event with the LAMBDA-PROXY
-    # integration
+def add_player(event, context):
     """
-    return {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-        "event": event
-    }
+    Handles new connections by adding the connection ID and user name to the
+    DynamoDB table.
+
+    :param user_name: The name of the user that started the connection.
+    :param table: The DynamoDB connection table.
+    :param connection_id: The websocket connection ID of the new connection.
+    :return: An HTTP status code that indicates the result of adding the connection
+             to the DynamoDB table.
     """
+    body = json.loads(event['body'])
+    game_id = body.get('game_id')
+    player = body.get('player')
+    connection_id = body.get('cid')
+    status_code = 200
+    player_dict = {
+        'player': player,
+        'cid': connection_id
+    }
+    try:
+        response = table.update_item(
+            Key={'game_id': game_id},
+            UpdateExpression="SET players = list_append(players, :p)",
+            ExpressionAttributeValues={
+                ':p': [player_dict],
+                },  
+        ReturnValues="UPDATED_NEW"
+        )
+        logger.info(
+            "Added connection %s for user %s.", connection_id, player)
+    except ClientError:
+        logger.exception(
+            "Couldn't add connection %s for user %s.", connection_id, player)
+        status_code = 503
+    return status_code

@@ -4,9 +4,9 @@ axios.defaults.headers.get['Content-Type'] = 'application/json';
 
 const baseurl = 'https://vq4564tgfc.execute-api.us-east-1.amazonaws.com/dev2';
 
-interface ResponseJson {
-    game_id: string;
-}
+// interface ResponseJson {
+//     game_id: string;
+// }
 
 const DartscoreService = {
     generateGameId: () => {
@@ -14,8 +14,8 @@ const DartscoreService = {
 
         return axios
             .get(url)
-            .then((res) => {
-                return Promise.resolve(res.data);
+            .then((res: AxiosResponse) => {
+                return res.data;
             })
             .catch((err: AxiosError) => {
                 return Promise.reject(JSON.stringify(err));
