@@ -44,3 +44,5 @@ var/
 
 # Serverless directories
 .serverless
+
+.eslintcache
