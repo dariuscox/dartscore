@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 
 axios.defaults.headers.get['Content-Type'] = 'application/json';
 
-const baseurl = 'https://vq4564tgfc.execute-api.us-east-1.amazonaws.com/dev2';
+const baseurl = 'https://iukxdiz252.execute-api.us-east-1.amazonaws.com/dev';
 
 // interface ResponseJson {
 //     game_id: string;
@@ -21,6 +21,18 @@ const DartscoreService = {
                 return Promise.reject(JSON.stringify(err));
             });
     },
+    lobbyState: () => {
+        let url = `${baseurl}/lobby`;
+
+        return axios
+            .get(url)
+            .then((res: AxiosResponse) => {
+                return res.data;
+            })
+            .catch((err: AxiosError) => {
+                return Promise.reject(JSON.stringify(err));
+            });
+    },
 };
 
-export default DartscoreService;
+export default DartscoreService; //export methods directly

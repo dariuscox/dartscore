@@ -7,30 +7,28 @@ import DartscoreService from '../services/DartscoreService';
 
 const Create = () => {
     const history = useHistory();
-    const [player1, setPlayer1] = useState('');
+    const [player, setPlayer] = useState('');
     const [gameId, setGameId] = useState('');
 
     useEffect(() => {
         if (!gameId) {
             DartscoreService.generateGameId().then((res) => {
-                console.log('called');
-                //getting called multiple times for some reason
                 const { game_id } = res;
                 if (!gameId) {
                     setGameId(game_id);
                     console.log(game_id);
                 }
             });
-            // use api call to get game id
         }
     }, [gameId]);
 
     const routeChange = (path: string) => {
+        // on route change do the create api call with the game id
         history.push({
             pathname: path,
             state: {
                 gameID: gameId,
-                player1: player1,
+                player1: player,
             },
         });
     };
@@ -49,7 +47,7 @@ const Create = () => {
             <div>
                 <JoinInput
                     placeholder="Enter Your Name"
-                    onChange={(event) => setPlayer1(event.target.value)}
+                    onChange={(event) => setPlayer(event.target.value)}
                 />
             </div>
             <div>

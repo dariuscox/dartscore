@@ -48,6 +48,14 @@ functions:
           path: /create
           method: POST
           cors: true
+  lobby:
+    handler: state.lobby
+    description: fetches the state of the lobby
+    events:
+      - http:
+          path: /lobby
+          method: GET
+          cors: true
   socket:
     handler: socket.lambda_handler
     description: Lamdbda socket handler
