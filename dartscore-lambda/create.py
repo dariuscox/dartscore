@@ -55,7 +55,11 @@ def create_game(event, context):
         }
         response = {
             "statusCode": 200,
-            "body": json.dumps(body)
+            "body": json.dumps(body),
+            "headers": {
+                    "Access-Control-Allow-Origin" : "*", # Required for CORS support to work
+                    "Access-Control-Allow-Credentials" : True # Required for cookies, authorization headers with HTTPS
+                }
         }
         print(response)
         return response

@@ -13,11 +13,7 @@ const App = () => (
             <Route path="/" component={Landing} exact />
             <Route path="/join" component={Join} exact />
             <Route path="/create" component={Create} exact />
-            <Route
-                path="/lobby"
-                render={(props) => <Lobby {...props} />}
-                exact
-            />
+            <Route path="/lobby" render={() => <Lobby />} exact />
             <Route path="/game" component={Game} exact />
         </Switch>
     </BrowserRouter>

@@ -3,7 +3,7 @@ import { HomeTheme } from './Themes';
 import { JoinInput } from './Inputs';
 import { JoinButton } from './Buttons';
 import { useHistory } from 'react-router-dom';
-import DartscoreService from '../services/DartscoreService';
+import { GenerateGameId, CreateGame } from '../services/DartscoreService';
 
 const Create = () => {
     const history = useHistory();
@@ -12,7 +12,7 @@ const Create = () => {
 
     useEffect(() => {
         if (!gameId) {
-            DartscoreService.generateGameId().then((res) => {
+            GenerateGameId().then((res) => {
                 const { game_id } = res;
                 if (!gameId) {
                     setGameId(game_id);
@@ -22,14 +22,15 @@ const Create = () => {
         }
     }, [gameId]);
 
-    const routeChange = (path: string) => {
-        // on route change do the create api call with the game id
-        history.push({
-            pathname: path,
-            state: {
-                gameID: gameId,
-                player1: player,
-            },
+    const CreateAndRoute = (path: string) => {
+        CreateGame(gameId).then(() => {
+            history.push({
+                pathname: path,
+                state: {
+                    gameID: gameId,
+                    player: player,
+                },
+            });
         });
     };
 
@@ -51,7 +52,7 @@ const Create = () => {
                 />
             </div>
             <div>
-                <JoinButton onClick={() => routeChange('/lobby')}>
+                <JoinButton onClick={() => CreateAndRoute('/lobby')}>
                     Play
                 </JoinButton>
             </div>
