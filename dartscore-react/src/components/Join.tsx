@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HomeTheme } from './Themes';
 import { JoinInput } from './Inputs';
 import { JoinButton } from './Buttons';
 import { useHistory } from 'react-router-dom';
 
 const Join = () => {
+    const [gameId, setGameId] = useState('');
+    const [player, setPlayer] = useState('');
     // will need to see if game is in progress or not to go to path
     const history = useHistory();
 
     const routeChange = (path: string) => {
-        history.push(path);
+        history.push({
+            pathname: path,
+            state: {
+                gameID: gameId,
+                player: player,
+            },
+        });
     };
 
     return (
@@ -21,13 +29,19 @@ const Join = () => {
                 <label>Game Code</label>
             </div>
             <div>
-                <JoinInput placeholder="Enter 4-Letter Code" />
+                <JoinInput
+                    placeholder="Enter 4-Letter Code"
+                    onChange={(event) => setGameId(event.target.value)}
+                />
             </div>
             <div>
                 <label>Name</label>
             </div>
             <div>
-                <JoinInput placeholder="Enter Your Name" />
+                <JoinInput
+                    placeholder="Enter Your Name"
+                    onChange={(event) => setPlayer(event.target.value)}
+                />
             </div>
             <div>
                 <JoinButton onClick={() => routeChange('/lobby')}>

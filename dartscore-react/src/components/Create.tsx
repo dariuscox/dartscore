@@ -3,35 +3,34 @@ import { HomeTheme } from './Themes';
 import { JoinInput } from './Inputs';
 import { JoinButton } from './Buttons';
 import { useHistory } from 'react-router-dom';
-import DartscoreService from '../services/DartscoreService';
+import { GenerateGameId, CreateGame } from '../services/DartscoreService';
 
 const Create = () => {
     const history = useHistory();
-    const [player1, setPlayer1] = useState('');
+    const [player, setPlayer] = useState('');
     const [gameId, setGameId] = useState('');
 
     useEffect(() => {
         if (!gameId) {
-            DartscoreService.generateGameId().then((res) => {
-                console.log('called');
-                //getting called multiple times for some reason
+            GenerateGameId().then((res) => {
                 const { game_id } = res;
                 if (!gameId) {
                     setGameId(game_id);
                     console.log(game_id);
                 }
             });
-            // use api call to get game id
         }
     }, [gameId]);
 
-    const routeChange = (path: string) => {
-        history.push({
-            pathname: path,
-            state: {
-                gameID: gameId,
-                player1: player1,
-            },
+    const CreateAndRoute = (path: string) => {
+        CreateGame(gameId).then(() => {
+            history.push({
+                pathname: path,
+                state: {
+                    gameID: gameId,
+                    player: player,
+                },
+            });
         });
     };
 
@@ -49,11 +48,11 @@ const Create = () => {
             <div>
                 <JoinInput
                     placeholder="Enter Your Name"
-                    onChange={(event) => setPlayer1(event.target.value)}
+                    onChange={(event) => setPlayer(event.target.value)}
                 />
             </div>
             <div>
-                <JoinButton onClick={() => routeChange('/lobby')}>
+                <JoinButton onClick={() => CreateAndRoute('/lobby')}>
                     Play
                 </JoinButton>
             </div>

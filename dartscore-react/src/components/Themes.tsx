@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const HomeTheme = styled.section`
+export const HomeTheme = styled.section`
     text-align: center;
     background-color: #282c34;
     min-height: 100vh;
@@ -12,7 +12,7 @@ const HomeTheme = styled.section`
     color: white;
 `;
 
-const GameTheme = styled.section`
+export const GameTheme = styled.section`
     text-align: center;
     background-color: #282c34;
     min-height: 100vh;
@@ -25,7 +25,7 @@ const GameTheme = styled.section`
     color: white;
 `;
 
-const JoinTheme = styled.section`
+export const JoinTheme = styled.section`
     text-align: center;
     background-color: #aac4f7;
     min-height: 100vh;
@@ -36,5 +36,3 @@ const JoinTheme = styled.section`
     font-size: calc(10px + 2vmin);
     color: #030303;
 `;
-
-export { HomeTheme, JoinTheme, GameTheme };
