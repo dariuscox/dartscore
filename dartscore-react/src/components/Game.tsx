@@ -8,11 +8,11 @@ const Game = () => {
     return (
         <GameTheme>
             <div>
-                <h2>501</h2>
+                <h2>Cricket</h2>
                 <h3>Game Code: {gameId}</h3>
             </div>
             <div>
-                <FiveOne></FiveOne>
+                <Cricket></Cricket>
             </div>
         </GameTheme>
     );

@@ -48,12 +48,28 @@ functions:
           path: /create
           method: POST
           cors: true
+  initialize_game:
+    handler: create.initialize_game
+    description: Adds a gamestate value to the table with the scores initalized
+    events:
+      - http:
+          path: /initialize
+          method: POST
+          cors: true
   lobby:
     handler: state.lobby
     description: fetches the state of the lobby
     events:
       - http:
           path: /lobby
+          method: GET
+          cors: true
+  game_state:
+    handler: state.get_game_state
+    description: fetches the state of the game
+    events:
+      - http:
+          path: /gamestate
           method: GET
           cors: true
   socket:
