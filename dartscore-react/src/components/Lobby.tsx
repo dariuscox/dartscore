@@ -3,6 +3,7 @@ import { JoinButton } from './Buttons';
 import { HomeTheme } from './Themes';
 import { useHistory, useLocation } from 'react-router-dom';
 import { LobbyState } from '../services/DartscoreService';
+import { read } from 'fs';
 
 type LobbyProps = {
     gameID: string;
@@ -14,6 +15,9 @@ const Lobby = () => {
     const { gameID, player } = state;
     const [player1, setPlayer1] = useState('');
     const [player2, setPlayer2] = useState('');
+    const [ready, setReady] = useState(false);
+    const host = player === player1;
+    const playButton = ready && host;
 
     const history = useHistory();
 
@@ -34,16 +38,18 @@ const Lobby = () => {
                 ws.current?.send(JSON.stringify(connectMessage));
             }; //will add player to dict on open send message to all connectees
             ws.current.onmessage = () => {
-                LobbyState(gameID).then((res) => {
-                    const { players } = res;
-                    if (!player1) {
-                        setPlayer1(players[0]['player']);
-                        console.log(player1);
-                    }
-                    if (players.length === 2 && !player2) {
-                        setPlayer2(players[1]['player']);
-                    }
-                });
+                if (!ready) {
+                    LobbyState(gameID).then((res) => {
+                        const { players } = res;
+                        if (!player1) {
+                            setPlayer1(players[0]['player']);
+                            console.log(player1);
+                        }
+                        if (players.length === 2 && !player2) {
+                            setPlayer2(players[1]['player']);
+                        }
+                    });
+                }
             };
             ws.current.onclose = () => console.log('ws closed');
 
@@ -54,9 +60,43 @@ const Lobby = () => {
         }
     });
 
+    useEffect(() => {
+        if (player1 && player2) {
+            setReady(true);
+        }
+    }, [player1, player2]);
+
+    useEffect(() => {
+        if (ready) {
+            ws.current.onmessage = () => {
+                routeChange('/game');
+            };
+        }
+    });
+    // const Join = (path: string) => {
+    //     CreateGame(gameId).then(() => {
+    //         history.push({
+    //             pathname: path,
+    //             state: {
+    //                 gameID: gameId,
+    //                 player: player,
+    //             },
+    //         });
+    //     });
+    // };
     const routeChange = (path: string) => {
         history.push(path);
     };
+
+    const PlayButton = () => (
+        <div>
+            <JoinButton
+                onClick={() => ws.current?.send(JSON.stringify(connectMessage))}
+            >
+                Play
+            </JoinButton>
+        </div>
+    );
 
     return (
         <HomeTheme>
@@ -69,11 +109,7 @@ const Lobby = () => {
             <div>
                 <h2>{player2}</h2>
             </div>
-            <div>
-                <JoinButton onClick={() => routeChange('/game')}>
-                    Play
-                </JoinButton>
-            </div>
+            {playButton ? <PlayButton /> : null}
         </HomeTheme>
     );
 };
