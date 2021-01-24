@@ -85,7 +85,16 @@ const Lobby = () => {
     //     });
     // };
     const routeChange = (path: string) => {
-        history.push(path);
+        history.push({
+            pathname: path,
+            state: {
+                gameID: gameID,
+                player: player,
+                player1: player1,
+                player2: player2,
+                ws: ws,
+            },
+        });
     };
 
     const PlayButton = () => (
