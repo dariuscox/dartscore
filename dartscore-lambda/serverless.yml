@@ -72,6 +72,14 @@ functions:
           path: /gamestate
           method: GET
           cors: true
+  update_game_state:
+    handler: state.update_game_state
+    description: updates game state changes for a player
+    events:
+      - http:
+          path: /update
+          method: POST
+          cors: true
   socket:
     handler: socket.lambda_handler
     description: Lamdbda socket handler
