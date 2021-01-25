@@ -3,7 +3,6 @@ import { JoinButton } from './Buttons';
 import { HomeTheme } from './Themes';
 import { useHistory, useLocation } from 'react-router-dom';
 import { LobbyState } from '../services/DartscoreService';
-import { read } from 'fs';
 
 type LobbyProps = {
     gameID: string;
@@ -68,8 +67,10 @@ const Lobby = () => {
 
     useEffect(() => {
         if (ready) {
-            ws.current.onmessage = () => {
-                routeChange('/game');
+            // dont do this, this will just get triggered any time, do a check for the actual message.
+            ws.current.onmessage = (wsMessage) => {
+                console.log(wsMessage);
+                if (wsMessage.data.includes('start')) routeChange('/game');
             };
         }
     });
@@ -92,15 +93,20 @@ const Lobby = () => {
                 player: player,
                 player1: player1,
                 player2: player2,
-                ws: ws,
+                connURL: connURL,
             },
         });
+    };
+
+    const startMessage = {
+        game_id: gameID,
+        msg: 'start',
     };
 
     const PlayButton = () => (
         <div>
             <JoinButton
-                onClick={() => ws.current?.send(JSON.stringify(connectMessage))}
+                onClick={() => ws.current?.send(JSON.stringify(startMessage))}
             >
                 Play
             </JoinButton>

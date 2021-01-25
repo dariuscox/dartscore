@@ -42,3 +42,16 @@ export const LobbyState = (gameID: string) => {
             return Promise.reject(JSON.stringify(err));
         });
 };
+
+export const GameState = (gameID: string) => {
+    let url = `${baseurl}/gamestate?game=${gameID}`;
+
+    return axios
+        .get(url)
+        .then((res: AxiosResponse) => {
+            return res.data;
+        })
+        .catch((err: AxiosError) => {
+            return Promise.reject(JSON.stringify(err));
+        });
+};
