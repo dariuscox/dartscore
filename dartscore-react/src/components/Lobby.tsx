@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { JoinButton } from './Buttons';
-import { HomeTheme } from './Themes';
+import { JoinButton } from 'components/Buttons';
+import { HomeTheme } from 'components/Themes';
 import { useHistory, useLocation } from 'react-router-dom';
-import { LobbyState } from '../services/DartscoreService';
+import { LobbyState, InitializeGame } from 'services/DartscoreService';
 
 type LobbyProps = {
     gameID: string;
@@ -102,11 +102,18 @@ const Lobby = () => {
         game_id: gameID,
         msg: 'start',
     };
+    const players = [player1, player2];
 
+    const startGame = () => {
+        InitializeGame(gameID, players, 'cricket');
+        ws.current?.send(JSON.stringify(startMessage));
+    };
     const PlayButton = () => (
         <div>
             <JoinButton
-                onClick={() => ws.current?.send(JSON.stringify(startMessage))}
+                onClick={() => {
+                    startGame();
+                }}
             >
                 Play
             </JoinButton>

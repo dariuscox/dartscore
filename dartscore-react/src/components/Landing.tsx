@@ -1,6 +1,6 @@
 import React from 'react';
-import { CreateButton, JoinButton } from './Buttons';
-import { HomeTheme } from './Themes';
+import { CreateButton, JoinButton } from 'components/Buttons';
+import { HomeTheme } from 'components/Themes';
 import { useHistory } from 'react-router-dom';
 
 const Landing = () => {

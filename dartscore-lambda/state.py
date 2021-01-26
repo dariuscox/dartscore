@@ -67,13 +67,13 @@ def get_game_state(event, context):
 def update_game_state(event, context):
     body = json.loads(event['body'])
     game_id = body.get('game_id')
-    player = body.get('player')
-    player_score = body.get('player_score')
+    # player = body.get('player')
+    game_state = body.get('game_state')
 
-    game = table.get_item(Key={'game_id': game_id})['Item']
-    game_state = game['game_state']
+    # game = table.get_item(Key={'game_id': game_id})['Item']
+    # game_state = game['game_state']
 
-    game_state[player] = player_score
+    # game_state[player] = player_score
 
     try:
         table.update_item(
@@ -85,7 +85,7 @@ def update_game_state(event, context):
         ReturnValues="UPDATED_NEW"
         )
         logger.info(
-            "Updated Scores for Game: %s, Player: %s ", game_id, player)
+            "Updated Scores for Game: %s", game_id)
         body = {
             "state": "updated",
             "game_state": game_state

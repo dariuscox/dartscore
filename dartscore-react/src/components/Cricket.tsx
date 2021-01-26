@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import styled from 'styled-components';
+
+import {
+    DartGameStateActions,
+    handleUpdateTargetValueByPlayerId,
+    GameState,
+} from 'hooks/useDartsGameState';
 
 const CricketTable = styled.table`
     border-collapse: collapse;
@@ -27,12 +33,55 @@ const CricketNumber = styled.td`
     border-right: 3px solid white;
 `;
 
+// type PlayerScore = {
+
+//     '20': number;
+//     '19': number;
+//     '18': number;
+//     '17': number;
+//     '16': number;
+//     '15': number;
+//     Bull: number;
+//     Total: number;
+// };
+
 type CricketProps = {
+    gameID: string;
+    player: string;
     player1: string;
     player2: string;
+    gameState: GameState;
+    dispatch: Dispatch<DartGameStateActions>;
 };
-const Cricket = (props: CricketProps) => {
-    const { player1, player2 } = props;
+const Cricket = ({
+    player,
+    player1,
+    player2,
+    gameState,
+    dispatch,
+}: CricketProps) => {
+    const cricketRows = ['20', '19', '18', '17', '16', '15', 'Bull'];
+
+    const renderCricketRow = (segment: string) => {
+        return (
+            <CricketRow>
+                <td>{gameState[player1][segment]}</td>
+                <CricketNumber>
+                    <button
+                        onClick={handleUpdateTargetValueByPlayerId({
+                            dispatch,
+                            playerId: player,
+                            segment,
+                        })}
+                    >
+                        {segment}
+                    </button>
+                </CricketNumber>
+                <td>{gameState[player2][segment]}</td>
+            </CricketRow>
+        );
+    };
+
     return (
         <CricketTable>
             <CricketRow>
@@ -40,45 +89,11 @@ const Cricket = (props: CricketProps) => {
                 <CricketHeader>VS</CricketHeader>
                 <CricketHeader>{player2}</CricketHeader>
             </CricketRow>
+            {cricketRows.map((segment) => renderCricketRow(segment))}
             <CricketRow>
-                <td>/</td>
-                <CricketNumber>20</CricketNumber>
-                <td></td>
-            </CricketRow>
-            <CricketRow>
-                <td>x</td>
-                <CricketNumber>19</CricketNumber>
-                <td>/</td>
-            </CricketRow>
-            <CricketRow>
-                <td></td>
-                <CricketNumber>18</CricketNumber>
-                <td></td>
-            </CricketRow>
-            <CricketRow>
-                <td>x</td>
-                <CricketNumber>17</CricketNumber>
-                <td>x</td>
-            </CricketRow>
-            <CricketRow>
-                <td></td>
-                <CricketNumber>16</CricketNumber>
-                <td></td>
-            </CricketRow>
-            <CricketRow>
-                <td>x</td>
-                <CricketNumber>15</CricketNumber>
-                <td>/</td>
-            </CricketRow>
-            <CricketRow>
-                <td></td>
-                <CricketNumber>B</CricketNumber>
-                <td></td>
-            </CricketRow>
-            <CricketRow>
-                <CricketFooter>Score 1</CricketFooter>
+                <CricketFooter>{gameState[player1]['Total']}</CricketFooter>
                 <CricketFooter></CricketFooter>
-                <CricketFooter>Score 2</CricketFooter>
+                <CricketFooter>{gameState[player2]['Total']}</CricketFooter>
             </CricketRow>
         </CricketTable>
     );

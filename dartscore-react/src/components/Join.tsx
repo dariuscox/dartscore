@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { HomeTheme } from './Themes';
-import { JoinInput } from './Inputs';
-import { JoinButton } from './Buttons';
+import { HomeTheme } from 'components/Themes';
+import { JoinInput } from 'components/Inputs';
+import { JoinButton } from 'components/Buttons';
 import { useHistory } from 'react-router-dom';
 
 const Join = () => {
