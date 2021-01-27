@@ -8,7 +8,7 @@ export interface Target {
     [key: string]: number;
 }
 
-enum DartGameStateActionTypes {
+export enum DartGameStateActionTypes {
     'updateTargetValueByPlayerId' = 'updateTargetValueByPlayerId',
     'updateGameState' = 'updateGameState',
 }
