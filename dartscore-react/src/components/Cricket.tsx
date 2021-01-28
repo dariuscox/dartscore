@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
 import { updateCricketState } from 'hooks/updateDartState';
 import {
-    DartGameStateActionTypes,
     handleUpdateGameState,
     useDartGameState,
 } from 'hooks/useDartsGameState';
@@ -49,6 +48,7 @@ const Cricket = ({
 }: CricketProps) => {
     const cricketRows = ['20', '19', '18', '17', '16', '15', 'Bull'];
     const [button, setButton] = useState(false);
+    const otherPlayer = player === player1 ? player2 : player1;
     const [gameState, dispatch] = useDartGameState({
         [player1]: {
             '15': 0,
@@ -87,14 +87,11 @@ const Cricket = ({
             ws.current.onmessage = (msg) => {
                 console.log(msg.data);
                 console.log(!msg.data.includes(player));
-                // if (!button) {
                 GetGameState(gameID).then((res) => {
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
                 });
-                // }
-                //}
             };
             ws.current.onclose = () => console.log('ws closed');
 
@@ -107,21 +104,14 @@ const Cricket = ({
             //then my partner sends an update because he updated and i update infinite loop
         }
     });
-    // useEffect(() => {
-    //     if (button) {
-    //         const updateMessage = {
-    //             game_id: gameID,
-    //             msg: player,
-    //         };
-    //         UpdateGame(gameID, gameState).then(() => {
-    //             setButton(false);
-    //             ws.current.send(JSON.stringify(updateMessage));
-    //         });
-    //     }
-    // }, [gameState]);
 
     const buttonUpdate = (segment: string) => {
-        const newGameState = updateCricketState(segment, player, gameState);
+        const newGameState = updateCricketState(
+            segment,
+            player,
+            otherPlayer,
+            gameState,
+        );
         const updateMessage = {
             game_id: gameID,
             msg: player,
@@ -129,24 +119,30 @@ const Cricket = ({
         console.log('new game state');
         console.log(newGameState);
         UpdateGame(gameID, newGameState).then(() => {
-            //setButton(false);
             ws.current.send(JSON.stringify(updateMessage));
         });
     };
-
+    const iconSelection = (score: number) => {
+        if (score === 0) {
+            return '';
+        }
+        if (score === 1) {
+            return `/`;
+        }
+        if (score === 2) {
+            return `x`;
+        }
+        if (score >= 3) {
+            return ` \u24E7 `;
+        }
+    };
     const renderCricketRow = (segment: string) => {
         return (
             <CricketRow>
-                <td>{gameState[player1][segment]}</td>
+                <td>{iconSelection(gameState[player1][segment])}</td>
                 <CricketNumber>
                     <button
                         onClick={() => {
-                            // dispatch({
-                            //     type:
-                            //         DartGameStateActionTypes.updateTargetValueByPlayerId,
-                            //     playerId: player,
-                            //     segment: segment,
-                            // });
                             buttonUpdate(segment);
                             setButton(true);
                         }}
@@ -154,7 +150,7 @@ const Cricket = ({
                         {segment}
                     </button>
                 </CricketNumber>
-                <td>{gameState[player2][segment]}</td>
+                <td>{iconSelection(gameState[player2][segment])}</td>
             </CricketRow>
         );
     };
