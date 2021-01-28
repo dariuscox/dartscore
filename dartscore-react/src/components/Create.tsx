@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { HomeTheme } from './Themes';
-import { JoinInput } from './Inputs';
-import { JoinButton } from './Buttons';
+import { HomeTheme } from 'components/Themes';
+import { JoinInput } from 'components/Inputs';
+import { JoinButton } from 'components/Buttons';
 import { useHistory } from 'react-router-dom';
-import { GenerateGameId, CreateGame } from '../services/DartscoreService';
+import { GenerateGameId, CreateGame } from 'services/DartscoreService';
 
 const Create = () => {
     const history = useHistory();
@@ -48,7 +48,9 @@ const Create = () => {
             <div>
                 <JoinInput
                     placeholder="Enter Your Name"
-                    onChange={(event) => setPlayer(event.target.value)}
+                    onChange={(event) =>
+                        setPlayer(event.target.value.toUpperCase())
+                    }
                 />
             </div>
             <div>

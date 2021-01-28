@@ -10,6 +10,7 @@ const JoinInput = styled.input`
     ::placeholder {
         color: #666666;
     }
+    text-transform: uppercase;
 `;
 
 export { JoinInput };

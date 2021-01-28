@@ -1,18 +1,35 @@
 import React from 'react';
-import { GameTheme } from './Themes';
-import Cricket from './Cricket';
-import FiveOne from './FiveOne'; // make game render whichever based on mode selected from backend
+import { GameTheme } from 'components/Themes';
+import { useLocation } from 'react-router-dom';
+import Cricket from 'components/Cricket';
+//import FiveOne from 'components/FiveOne'; // make game render whichever based on mode selected from backend
+
+type GameProps = {
+    gameID: string;
+    player: string;
+    player1: string;
+    player2: string;
+    connURL: string;
+};
 
 const Game = () => {
-    var gameId = Math.random().toString(36).substr(2, 4).toUpperCase(); // get game id from the backend
+    const { state } = useLocation<GameProps>();
+    const { gameID, player, player1, player2, connURL } = state;
+
     return (
         <GameTheme>
             <div>
-                <h2>501</h2>
-                <h3>Game Code: {gameId}</h3>
+                <h2>Cricket</h2>
+                <h3>Game Code: {gameID}</h3>
             </div>
             <div>
-                <FiveOne></FiveOne>
+                <Cricket
+                    gameID={gameID}
+                    connURL={connURL}
+                    player={player}
+                    player1={player1}
+                    player2={player2}
+                ></Cricket>
             </div>
         </GameTheme>
     );

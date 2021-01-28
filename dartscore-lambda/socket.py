@@ -15,13 +15,29 @@ def handle_connect(game_id, table, connection_id, player):
         'cid': connection_id
     }
     logger.info("before try")
+    game = table.get_item(Key={'game_id': game_id})['Item']
+    logger.info(game)
+    players = game['players']
+    updated = False
+    if players:
+        logger.info(players)
+        for player_info in players:
+            logger.info(player_info)
+            if player_info['player'] == player:
+                player_info['cid'] = connection_id
+                updated = True
+                logger.info("Updated existing player")
+    if not updated:
+        players.append(player_dict)
+        logger.info("Added new player to the Table")
+            
     try:
         # need to see if player exists already, if so then i gota only update the conn id
         table.update_item(
             Key={'game_id': game_id},
-            UpdateExpression="SET players = list_append(players, :p)",
+            UpdateExpression="SET players = :p",
             ExpressionAttributeValues={
-                ':p': [player_dict],
+                ':p': players,
                 },  
         ReturnValues="UPDATED_NEW"
         )
@@ -155,55 +171,3 @@ def lambda_handler(event, context):
     #     response['statusCode'] = 404
 
     return response
-
-
-
-
-
-    # dyanmo_table = {
-    #     game_id : fuck,
-    #     status : lobby,
-    #     players: [
-    #         {
-    #             player: steve,
-    #             cid: connectionshit
-    #         },
-    #         {
-    #             player: johann,
-    #             cid: connectionshit
-    #         },
-    #     ]
-    #     gametype: cricket
-    #     gamestate: {
-            
-    #     }
-
-    # }
-
-
-    # gamestate: {
-    #     [
-    #         player1 : {
-    #         20: 0,
-    #         19:0,
-    #         18: 0,
-    #         17:0,
-    #         16: 0,
-    #         15:0,
-    #         Bull: 0,
-    #         Total: 0
-    #         },
-    #         player2 : {
-    #         20: 0,
-    #         19:0,
-    #         18: 0,
-    #         17:0,
-    #         16: 0,
-    #         15:0,
-    #         Bull: 0,
-    #         Total: 0
-    #         }
-    #     ]
-    # }
-
-    

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { HomeTheme } from './Themes';
-import { JoinInput } from './Inputs';
-import { JoinButton } from './Buttons';
+import { HomeTheme } from 'components/Themes';
+import { JoinInput } from 'components/Inputs';
+import { JoinButton } from 'components/Buttons';
 import { useHistory } from 'react-router-dom';
 
 const Join = () => {
@@ -31,7 +31,9 @@ const Join = () => {
             <div>
                 <JoinInput
                     placeholder="Enter 4-Letter Code"
-                    onChange={(event) => setGameId(event.target.value)}
+                    onChange={(event) =>
+                        setGameId(event.target.value.toUpperCase())
+                    }
                 />
             </div>
             <div>
@@ -40,7 +42,9 @@ const Join = () => {
             <div>
                 <JoinInput
                     placeholder="Enter Your Name"
-                    onChange={(event) => setPlayer(event.target.value)}
+                    onChange={(event) =>
+                        setPlayer(event.target.value.toUpperCase())
+                    }
                 />
             </div>
             <div>
