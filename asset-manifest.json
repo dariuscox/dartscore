@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/dartscore/static/css/main.4a5e752a.chunk.css",
-    "main.js": "/dartscore/static/js/main.30ecaf01.chunk.js",
-    "main.js.map": "/dartscore/static/js/main.30ecaf01.chunk.js.map",
+    "main.js": "/dartscore/static/js/main.0cae15bc.chunk.js",
+    "main.js.map": "/dartscore/static/js/main.0cae15bc.chunk.js.map",
     "runtime-main.js": "/dartscore/static/js/runtime-main.55ed84bb.js",
     "runtime-main.js.map": "/dartscore/static/js/runtime-main.55ed84bb.js.map",
     "static/js/2.d9f788a6.chunk.js": "/dartscore/static/js/2.d9f788a6.chunk.js",
@@ -18,6 +18,6 @@
     "static/js/runtime-main.55ed84bb.js",
     "static/js/2.d9f788a6.chunk.js",
     "static/css/main.4a5e752a.chunk.css",
-    "static/js/main.30ecaf01.chunk.js"
+    "static/js/main.0cae15bc.chunk.js"
   ]
 }
