@@ -48,7 +48,9 @@ const Create = () => {
             <div>
                 <JoinInput
                     placeholder="Enter Your Name"
-                    onChange={(event) => setPlayer(event.target.value)}
+                    onChange={(event) =>
+                        setPlayer(event.target.value.toUpperCase())
+                    }
                 />
             </div>
             <div>
