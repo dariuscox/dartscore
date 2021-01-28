@@ -105,8 +105,9 @@ const Lobby = () => {
     const players = [player1, player2];
 
     const startGame = () => {
-        InitializeGame(gameID, players, 'cricket');
-        ws.current?.send(JSON.stringify(startMessage));
+        InitializeGame(gameID, players, 'cricket').then(() => {
+            ws.current?.send(JSON.stringify(startMessage));
+        });
     };
     const PlayButton = () => (
         <div>

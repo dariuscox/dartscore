@@ -2,7 +2,7 @@ import React from 'react';
 import { GameTheme } from 'components/Themes';
 import { useLocation } from 'react-router-dom';
 import Cricket from 'components/Cricket';
-import FiveOne from 'components/FiveOne'; // make game render whichever based on mode selected from backend
+//import FiveOne from 'components/FiveOne'; // make game render whichever based on mode selected from backend
 
 type GameProps = {
     gameID: string;

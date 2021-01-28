@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
+import { updateCricketState } from 'hooks/updateDartState';
 import {
     DartGameStateActionTypes,
     handleUpdateGameState,
@@ -79,19 +80,21 @@ const Cricket = ({
                 console.log('ws opened');
                 GetGameState(gameID).then((res) => {
                     const { game_state } = res;
+                    setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
                 });
             };
             ws.current.onmessage = (msg) => {
                 console.log(msg.data);
                 console.log(!msg.data.includes(player));
-                if (!msg.data.includes(player)) {
-                    GetGameState(gameID).then((res) => {
-                        const { game_state } = res;
-
-                        handleUpdateGameState(dispatch)(game_state);
-                    });
-                }
+                // if (!button) {
+                GetGameState(gameID).then((res) => {
+                    const { game_state } = res;
+                    setButton(false);
+                    handleUpdateGameState(dispatch)(game_state);
+                });
+                // }
+                //}
             };
             ws.current.onclose = () => console.log('ws closed');
 
@@ -104,19 +107,33 @@ const Cricket = ({
             //then my partner sends an update because he updated and i update infinite loop
         }
     });
-    useEffect(() => {
-        if (button) {
-            UpdateGame(gameID, gameState).then(() => {
-                setButton(false);
-                ws.current.send(JSON.stringify(updateMessage));
-            });
-        }
-    }, [gameState]);
+    // useEffect(() => {
+    //     if (button) {
+    //         const updateMessage = {
+    //             game_id: gameID,
+    //             msg: player,
+    //         };
+    //         UpdateGame(gameID, gameState).then(() => {
+    //             setButton(false);
+    //             ws.current.send(JSON.stringify(updateMessage));
+    //         });
+    //     }
+    // }, [gameState]);
 
-    const updateMessage = {
-        game_id: gameID,
-        msg: player,
+    const buttonUpdate = (segment: string) => {
+        const newGameState = updateCricketState(segment, player, gameState);
+        const updateMessage = {
+            game_id: gameID,
+            msg: player,
+        };
+        console.log('new game state');
+        console.log(newGameState);
+        UpdateGame(gameID, newGameState).then(() => {
+            //setButton(false);
+            ws.current.send(JSON.stringify(updateMessage));
+        });
     };
+
     const renderCricketRow = (segment: string) => {
         return (
             <CricketRow>
@@ -124,12 +141,13 @@ const Cricket = ({
                 <CricketNumber>
                     <button
                         onClick={() => {
-                            dispatch({
-                                type:
-                                    DartGameStateActionTypes.updateTargetValueByPlayerId,
-                                playerId: player,
-                                segment: segment,
-                            });
+                            // dispatch({
+                            //     type:
+                            //         DartGameStateActionTypes.updateTargetValueByPlayerId,
+                            //     playerId: player,
+                            //     segment: segment,
+                            // });
+                            buttonUpdate(segment);
                             setButton(true);
                         }}
                     >
