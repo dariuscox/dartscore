@@ -34,24 +34,25 @@ const Game = () => {
                 </div>
             </GameTheme>
         );
+    } else if (gameType === 'fiveOhOne') {
+        return (
+            <GameTheme>
+                <div>
+                    <h2>501</h2>
+                    <h3>Game Code: {gameID}</h3>
+                </div>
+                <div>
+                    <FiveOne
+                        gameID={gameID}
+                        connURL={connURL}
+                        player={player}
+                        player1={player1}
+                        player2={player2}
+                    ></FiveOne>
+                </div>
+            </GameTheme>
+        );
     }
-    return (
-        <GameTheme>
-            <div>
-                <h2>501</h2>
-                <h3>Game Code: {gameID}</h3>
-            </div>
-            <div>
-                <FiveOne
-                    gameID={gameID}
-                    connURL={connURL}
-                    player={player}
-                    player1={player1}
-                    player2={player2}
-                ></FiveOne>
-            </div>
-        </GameTheme>
-    );
 };
 
 export default Game;

@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import { ScoreInput } from 'components/Inputs';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
 import { updateFiveOneState } from 'hooks/updateDartState';
@@ -41,19 +47,23 @@ const FiveOneScore = styled.label`
     font-size: calc(150px + 2vmin);
 `;
 
-const FiveOneTable = styled.table`
+const FiveOneTable = styled(Table)`
     border-collapse: collapse;
     width: 100%;
 `;
 
-const FiveOneHeader = styled.th`
+const FiveOneHeader = styled(TableHead)`
     padding: 10px;
     border-bottom: 3px solid white;
 `;
 
-const FiveOneRow = styled.tr`
+const FiveOneRow = styled(TableRow)`
     // pull cricket row out into a separate component
     height: 20px;
+`;
+const FiveOneContainer = styled(TableContainer)`
+    // pull cricket row out into a separate component
+    height: 300px;
 `;
 
 const FiveOneData = styled.td`
@@ -146,12 +156,12 @@ const FiveOne = ({
         for (var i = 0; i < moves.length; i++) {
             rows.push(
                 <FiveOneRow>
-                    <td>{(i + 1) * 3}</td>
-                    <td>{moves[i]}</td>
+                    <TableCell>{(i + 1) * 3}</TableCell>
+                    <TableCell>{moves[i]}</TableCell>
                 </FiveOneRow>,
             );
         }
-        return rows;
+        return rows.reverse();
     };
     const renderInput = (playerId: string) => {
         // can add functionality to only allow scroe if its players turn
@@ -174,12 +184,12 @@ const FiveOne = ({
     return (
         <FiveOneGame>
             <FiveOneSection>
-                <FiveOneTable>
-                    <FiveOneRow>
-                        <FiveOneHeader>Scoreboard</FiveOneHeader>
-                    </FiveOneRow>
-                    {renderFiveOneRow(player1)}
-                </FiveOneTable>
+                <FiveOneHeader>Scoreboard</FiveOneHeader>
+                <FiveOneContainer>
+                    <FiveOneTable stickyHeader>
+                        {renderFiveOneRow(player1)}
+                    </FiveOneTable>
+                </FiveOneContainer>
             </FiveOneSection>
             <FiveOneSection>
                 <FiveOneScore>{gameState[player1]['Total']}</FiveOneScore>
@@ -196,12 +206,12 @@ const FiveOne = ({
                 {renderInput(player2)}
             </FiveOneSection>
             <FiveOneSection>
-                <FiveOneTable>
-                    <FiveOneRow>
-                        <FiveOneHeader>Scoreboard</FiveOneHeader>
-                    </FiveOneRow>
-                    {renderFiveOneRow(player2)}
-                </FiveOneTable>
+                <FiveOneHeader>Scoreboard</FiveOneHeader>
+                <FiveOneContainer>
+                    <FiveOneTable stickyHeader>
+                        {renderFiveOneRow(player2)}
+                    </FiveOneTable>
+                </FiveOneContainer>
             </FiveOneSection>
         </FiveOneGame>
     );

@@ -25,13 +25,12 @@ const Create = () => {
     }, [gameId]);
 
     const CreateAndRoute = (path: string) => {
-        CreateGame(gameId).then(() => {
+        CreateGame(gameId, gameType).then(() => {
             history.push({
                 pathname: path,
                 state: {
                     gameID: gameId,
                     player: player,
-                    gameType: gameType,
                 },
             });
         });

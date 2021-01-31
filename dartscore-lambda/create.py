@@ -54,11 +54,12 @@ def create_game(event, context):
     print("Event Passed to Handler: " + json.dumps(event))
     body = json.loads(event['body'])
     game_id = body.get('game_id')
+    game_type = body.get('game_type')
     print(game_id)
     game = {
         'game_id': game_id,
         'status': 'lobby',
-        'type' : 'cricket',
+        'game_type' : game_type,
         'players': []
     }
     print(game)

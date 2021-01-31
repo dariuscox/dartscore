@@ -35,11 +35,11 @@ export const InitializeGame = (
         });
 };
 
-export const CreateGame = (game_id: string) => {
+export const CreateGame = (game_id: string, game_type: string) => {
     let url = `${baseurl}/create`;
 
     return axios
-        .post(url, { game_id: game_id })
+        .post(url, { game_id: game_id, game_type: game_type })
         .then((res: AxiosResponse) => {
             return res.data;
         })

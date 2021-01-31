@@ -46,8 +46,10 @@ def lobby(event, context):
     game = table.get_item(Key={'game_id': game_id})['Item']
     logger.info(game)
     players = game['players']
+    game_type = game['game_type']
     body = {
             "players": players,
+            "game_type": game_type
             }
     response["body"] = json.dumps(body)
     print(response)

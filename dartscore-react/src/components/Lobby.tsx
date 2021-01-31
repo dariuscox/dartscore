@@ -7,12 +7,12 @@ import { LobbyState, InitializeGame } from 'services/DartscoreService';
 type LobbyProps = {
     gameID: string;
     player: string;
-    gameType: string;
 };
 
 const Lobby = () => {
     const { state } = useLocation<LobbyProps>();
-    const { gameID, player, gameType } = state;
+    const { gameID, player } = state;
+    const [gameType, setGameType] = useState('');
     const readableGameType = gameType === 'cricket' ? 'Cricket' : ' 501';
     const [player1, setPlayer1] = useState('');
     const [player2, setPlayer2] = useState('');
@@ -41,7 +41,8 @@ const Lobby = () => {
             ws.current.onmessage = () => {
                 if (!ready) {
                     LobbyState(gameID).then((res) => {
-                        const { players } = res;
+                        const { players, game_type } = res;
+                        setGameType(game_type);
                         if (!player1) {
                             setPlayer1(players[0]['player']);
                             console.log(player1);
