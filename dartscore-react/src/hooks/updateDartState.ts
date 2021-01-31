@@ -38,7 +38,7 @@ export function updateFiveOneState(
 ) {
     const newGameState = JSON.parse(JSON.stringify(gameState));
     const invalidScores = [163, 166, 169, 172, 173, 175, 176, 178, 179];
-    if (invalidScores.includes(score) || score > 180) {
+    if (invalidScores.includes(score) || score > 180 || score < 0) {
         return newGameState;
     }
     var newTotal = newGameState[playerId]['Total'] - score;
