@@ -54,11 +54,12 @@ def create_game(event, context):
     print("Event Passed to Handler: " + json.dumps(event))
     body = json.loads(event['body'])
     game_id = body.get('game_id')
+    game_type = body.get('game_type')
     print(game_id)
     game = {
         'game_id': game_id,
         'status': 'lobby',
-        'type' : 'cricket',
+        'game_type' : game_type,
         'players': []
     }
     print(game)
@@ -102,6 +103,14 @@ def initialize_game(event, context):
                 '15':0,
                 'Bull': 0,
                 'Total': 0
+            }
+            game_state[player] = player_score
+    if game_type == 'fiveOhOne':
+        game_state = {}
+        for player in players:
+            player_score = {
+                'Total': 501,
+                'Moves': [] # store as a list so I can just use that position as the move number
             }
             game_state[player] = player_score
     try:

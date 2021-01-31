@@ -4,11 +4,13 @@ import { JoinInput } from 'components/Inputs';
 import { JoinButton } from 'components/Buttons';
 import { useHistory } from 'react-router-dom';
 import { GenerateGameId, CreateGame } from 'services/DartscoreService';
+import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 
 const Create = () => {
     const history = useHistory();
     const [player, setPlayer] = useState('');
     const [gameId, setGameId] = useState('');
+    const [gameType, setGameType] = useState('cricket');
 
     useEffect(() => {
         if (!gameId) {
@@ -23,7 +25,7 @@ const Create = () => {
     }, [gameId]);
 
     const CreateAndRoute = (path: string) => {
-        CreateGame(gameId).then(() => {
+        CreateGame(gameId, gameType).then(() => {
             history.push({
                 pathname: path,
                 state: {
@@ -32,6 +34,10 @@ const Create = () => {
                 },
             });
         });
+    };
+
+    const handleChange = (event: object, newGameType: string) => {
+        setGameType(newGameType);
     };
 
     return (
@@ -52,6 +58,16 @@ const Create = () => {
                         setPlayer(event.target.value.toUpperCase())
                     }
                 />
+            </div>
+            <div>
+                <ToggleButtonGroup
+                    value={gameType}
+                    onChange={handleChange}
+                    exclusive
+                >
+                    <ToggleButton value="cricket">Cricket</ToggleButton>
+                    <ToggleButton value="fiveOhOne">501</ToggleButton>
+                </ToggleButtonGroup>
             </div>
             <div>
                 <JoinButton onClick={() => CreateAndRoute('/lobby')}>

@@ -3,11 +3,16 @@ import { useReducer, Reducer, Dispatch } from 'react';
 export interface GameState {
     [key: string]: Target;
 }
+export interface FiveOneState {
+    [key: string]: MoveTotal;
+}
 
 export interface Target {
     [key: string]: number;
 }
-
+export interface MoveTotal {
+    [key: string]: number | number[];
+}
 export enum DartGameStateActionTypes {
     'updateTargetValueByPlayerId' = 'updateTargetValueByPlayerId',
     'updateGameState' = 'updateGameState',
@@ -44,6 +49,26 @@ export function useDartGameState(
     };
     return useReducer<Reducer<GameState, DartGameStateActions>>(
         gameStateReducer,
+        initialState,
+    );
+}
+
+export function useFiveOneState(
+    initialState: FiveOneState,
+): [FiveOneState, Dispatch<DartGameStateActions>] {
+    const fiveOneStateReducer = (
+        state: FiveOneState,
+        action: DartGameStateActions,
+    ) => {
+        switch (action.type) {
+            case DartGameStateActionTypes.updateGameState:
+                return action.gameState;
+            default:
+                return state;
+        }
+    };
+    return useReducer<Reducer<FiveOneState, DartGameStateActions>>(
+        fiveOneStateReducer,
         initialState,
     );
 }
