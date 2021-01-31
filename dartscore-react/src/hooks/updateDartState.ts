@@ -37,13 +37,18 @@ export function updateFiveOneState(
     gameState: FiveOneState,
 ) {
     const newGameState = JSON.parse(JSON.stringify(gameState));
+    const invalidScores = [163, 166, 169, 172, 173, 175, 176, 178, 179];
+    if (invalidScores.includes(score) || score > 180) {
+        return newGameState;
+    }
     var newTotal = newGameState[playerId]['Total'] - score;
     if (newTotal < 0) {
         // add functionality to handle busts and alert the user
-        newTotal = 0;
+        return newGameState;
     }
     newGameState[playerId]['Total'] = newTotal;
     newGameState[playerId]['Moves'].push(score);
+
     // if (
     //     newGameState[playerId][segment] > 3 &&
     //     newGameState[otherPlayer][segment] < 3
