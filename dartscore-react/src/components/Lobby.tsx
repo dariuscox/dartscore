@@ -7,11 +7,13 @@ import { LobbyState, InitializeGame } from 'services/DartscoreService';
 type LobbyProps = {
     gameID: string;
     player: string;
+    gameType: string;
 };
 
 const Lobby = () => {
     const { state } = useLocation<LobbyProps>();
-    const { gameID, player } = state;
+    const { gameID, player, gameType } = state;
+    const readableGameType = gameType === 'cricket' ? 'Cricket' : ' 501';
     const [player1, setPlayer1] = useState('');
     const [player2, setPlayer2] = useState('');
     const [ready, setReady] = useState(false);
@@ -90,6 +92,7 @@ const Lobby = () => {
             pathname: path,
             state: {
                 gameID: gameID,
+                gameType: gameType,
                 player: player,
                 player1: player1,
                 player2: player2,
@@ -105,7 +108,7 @@ const Lobby = () => {
     const players = [player1, player2];
 
     const startGame = () => {
-        InitializeGame(gameID, players, 'cricket').then(() => {
+        InitializeGame(gameID, players, gameType).then(() => {
             ws.current?.send(JSON.stringify(startMessage));
         });
     };
@@ -125,12 +128,11 @@ const Lobby = () => {
         <HomeTheme>
             <div>
                 <h1>Dartscore Lobby: {gameID}</h1>
+                <h1>{readableGameType}</h1>
             </div>
             <div>
-                <h2>{player1}</h2>
-            </div>
-            <div>
-                <h2>{player2}</h2>
+                <h3>{player1}</h3>
+                <h3>{player2}</h3>
             </div>
             {playButton ? <PlayButton /> : null}
         </HomeTheme>

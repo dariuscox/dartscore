@@ -104,6 +104,14 @@ def initialize_game(event, context):
                 'Total': 0
             }
             game_state[player] = player_score
+    if game_type == 'fiveOhOne':
+        game_state = {}
+        for player in players:
+            player_score = {
+                'Total': 501,
+                'Moves': [] # store as a list so I can just use that position as the move number
+            }
+            game_state[player] = player_score
     try:
         table.update_item(
             Key={'game_id': game_id},
