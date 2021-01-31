@@ -49,12 +49,5 @@ export function updateFiveOneState(
     newGameState[playerId]['Total'] = newTotal;
     newGameState[playerId]['Moves'].push(score);
 
-    // if (
-    //     newGameState[playerId][segment] > 3 &&
-    //     newGameState[otherPlayer][segment] < 3
-    // ) {
-    //     const score = segment === 'Bull' ? 25 : parseInt(segment);
-    //     newGameState[playerId]['Total'] += score;
-    // }
     return newGameState;
 }
