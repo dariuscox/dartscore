@@ -5,6 +5,16 @@ import { JoinButton } from 'components/Buttons';
 import { useHistory } from 'react-router-dom';
 import { GenerateGameId, CreateGame } from 'services/DartscoreService';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
+import styled from 'styled-components';
+
+const ModeToggleGroup = styled(ToggleButtonGroup)`
+    background-color: #2adcc4;
+    color: black;
+    &:hover {
+        background-color: #9d74d3;
+        color: black;
+    }
+`;
 
 const Create = () => {
     const history = useHistory();
@@ -58,7 +68,10 @@ const Create = () => {
                     placeholder="Enter Your Name"
                     inputProps={{
                         maxLength: 12,
-                        style: { textTransform: 'uppercase' },
+                        style: {
+                            textTransform: 'uppercase',
+                            textAlign: 'center',
+                        },
                     }}
                     onChange={(event) =>
                         setPlayer(event.target.value.toUpperCase())
@@ -66,14 +79,14 @@ const Create = () => {
                 />
             </div>
             <div>
-                <ToggleButtonGroup
+                <ModeToggleGroup
                     value={gameType}
                     onChange={handleChange}
                     exclusive
                 >
                     <ToggleButton value="cricket">Cricket</ToggleButton>
                     <ToggleButton value="fiveOhOne">501</ToggleButton>
-                </ToggleButtonGroup>
+                </ModeToggleGroup>
             </div>
             <div>
                 <JoinButton onClick={() => CreateAndRoute('/lobby')}>

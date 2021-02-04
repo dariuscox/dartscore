@@ -33,7 +33,10 @@ const Join = () => {
                     placeholder="Enter 4-Letter Code"
                     inputProps={{
                         maxLength: 4,
-                        style: { textTransform: 'uppercase' },
+                        style: {
+                            textTransform: 'uppercase',
+                            textAlign: 'center',
+                        },
                     }}
                     onChange={(event) =>
                         setGameId(event.target.value.toUpperCase())
@@ -48,7 +51,10 @@ const Join = () => {
                     placeholder="Enter Your Name"
                     inputProps={{
                         maxLength: 12,
-                        style: { textTransform: 'uppercase' },
+                        style: {
+                            textTransform: 'uppercase',
+                            textAlign: 'center',
+                        },
                     }}
                     onChange={(event) =>
                         setPlayer(event.target.value.toUpperCase())

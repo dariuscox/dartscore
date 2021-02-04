@@ -4,23 +4,28 @@ import TextField from '@material-ui/core/TextField';
 export const JoinInput = styled(TextField)`
     /* default */
     .MuiInput-underline:before {
-        border-bottom: 2px solid #b989f8;
+        border-bottom: 2px solid #2adcc4;
     }
     /* hover (double-ampersand needed for specificity reasons. */
     && .MuiInput-underline:hover:before {
-        border-bottom: 2px solid #9d74d3;
+        border-bottom: 2px solid #2adcc4;
+        color: #9d74d3;
     }
     /* focused */
     .MuiInput-underline:after {
-        border-bottom: 2px solid #2adcc4;
+        border-bottom: 2px solid #9d74d3;
+        color: #9d74d3;
+    }
+    & .Mui-focused:after {
+        color: #9d74d3;
     }
     & .MuiInput-root {
         padding: 10px;
         margin: 10px;
-        color: #b989f8;
+        color: #2adcc4;
     }
-    ::placeholder {
-        color: #b989f8;
+    & ::placeholder {
+        color: #9d74d3; //color: #2adcc4;
     }
 `;
 
