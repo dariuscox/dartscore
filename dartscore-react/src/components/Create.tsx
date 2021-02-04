@@ -56,6 +56,10 @@ const Create = () => {
             <div>
                 <JoinInput
                     placeholder="Enter Your Name"
+                    inputProps={{
+                        maxLength: 12,
+                        style: { textTransform: 'uppercase' },
+                    }}
                     onChange={(event) =>
                         setPlayer(event.target.value.toUpperCase())
                     }

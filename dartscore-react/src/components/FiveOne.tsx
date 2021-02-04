@@ -4,7 +4,6 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { ScoreInput } from 'components/Inputs';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
@@ -17,7 +16,7 @@ import {
 const FiveOneGame = styled.section`
     //add legs
     text-align: center;
-    background-color: #282c34;
+    background-color: #252525;
     justify-content: center;
     display: flex;
     flex-direction: row;
@@ -52,7 +51,7 @@ const FiveOneTable = styled(Table)`
     width: 100%;
 `;
 
-const FiveOneHeader = styled(TableHead)`
+const FiveOneHeader = styled.label`
     padding: 10px;
     border-bottom: 3px solid white;
 `;
@@ -66,7 +65,8 @@ const FiveOneContainer = styled(TableContainer)`
     height: 300px;
 `;
 
-const FiveOneData = styled.td`
+const FiveOneData = styled(TableCell)`
+    color: white;
     text-align: left;
 `;
 
@@ -156,12 +156,19 @@ const FiveOne = ({
         for (var i = 0; i < moves.length; i++) {
             rows.push(
                 <FiveOneRow>
-                    <TableCell>{(i + 1) * 3}</TableCell>
-                    <TableCell>{moves[i]}</TableCell>
+                    <FiveOneData>{(i + 1) * 3}</FiveOneData>
+                    <FiveOneData>{moves[i]}</FiveOneData>
                 </FiveOneRow>,
             );
         }
         return rows.reverse();
+    };
+    const handleScoreInput = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter') {
+            if (score) {
+                buttonUpdate();
+            }
+        }
     };
     const renderInput = (playerId: string) => {
         // can add functionality to only allow scroe if its players turn
@@ -174,6 +181,7 @@ const FiveOne = ({
                         onChange={(event) =>
                             setTextScore(event.target.value.toUpperCase())
                         }
+                        onKeyDown={(event) => handleScoreInput(event)}
                     />
                     <button onClick={buttonUpdate}>submit</button>
                 </div>
@@ -187,7 +195,7 @@ const FiveOne = ({
                 <FiveOneHeader>Scoreboard</FiveOneHeader>
                 <FiveOneContainer>
                     <FiveOneTable stickyHeader>
-                        {renderFiveOneRow(player1)}
+                        <TableBody>{renderFiveOneRow(player1)}</TableBody>
                     </FiveOneTable>
                 </FiveOneContainer>
             </FiveOneSection>
@@ -209,7 +217,7 @@ const FiveOne = ({
                 <FiveOneHeader>Scoreboard</FiveOneHeader>
                 <FiveOneContainer>
                     <FiveOneTable stickyHeader>
-                        {renderFiveOneRow(player2)}
+                        <TableBody>{renderFiveOneRow(player2)}</TableBody>
                     </FiveOneTable>
                 </FiveOneContainer>
             </FiveOneSection>

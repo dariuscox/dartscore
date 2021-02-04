@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
 
 export const JoinInput = styled(TextField)`
     /* default */
@@ -18,22 +17,11 @@ export const JoinInput = styled(TextField)`
     & .MuiInput-root {
         padding: 10px;
         margin: 10px;
-        //background: #b6b6b6;
-        color: #b989f8;
-        //border: none;
-    }
-    /* &:hover {
-        background-color: #9d74d3;
-    } */
-    & .MuiInput-underline {
         color: #b989f8;
     }
-    //border-color:
-
     ::placeholder {
         color: #b989f8;
     }
-    text-transform: uppercase;
 `;
 
 export const ScoreInput = styled.input`
