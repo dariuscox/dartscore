@@ -13,7 +13,7 @@ const Lobby = () => {
     const { state } = useLocation<LobbyProps>();
     const { gameID, player } = state;
     const [gameType, setGameType] = useState('');
-    const readableGameType = gameType === 'cricket' ? 'Cricket' : ' 501';
+    const [readableGameType, setReadableGameType] = useState('');
     const [player1, setPlayer1] = useState('');
     const [player2, setPlayer2] = useState('');
     const [ready, setReady] = useState(false);
@@ -22,6 +22,13 @@ const Lobby = () => {
 
     const history = useHistory();
 
+    useEffect(() => {
+        if (gameType) {
+            gameType === 'cricket'
+                ? setReadableGameType('Cricket')
+                : setReadableGameType('501');
+        }
+    }, [gameType]);
     const ws = useRef<WebSocket>();
     const connURL = `wss://cvc7ipmik7.execute-api.us-east-1.amazonaws.com/dev/?game=${gameID}&player=${player}`;
 
@@ -30,14 +37,13 @@ const Lobby = () => {
         msg: 'I have connected',
     };
 
-    // need to setup on message functionality and send message after connect
     useEffect(() => {
         if (!ws.current) {
             ws.current = new WebSocket(connURL);
             ws.current.onopen = () => {
                 console.log('ws opened');
                 ws.current?.send(JSON.stringify(connectMessage));
-            }; //will add player to dict on open send message to all connectees
+            };
             ws.current.onmessage = () => {
                 if (!ready) {
                     LobbyState(gameID).then((res) => {
@@ -70,24 +76,13 @@ const Lobby = () => {
 
     useEffect(() => {
         if (ready) {
-            // dont do this, this will just get triggered any time, do a check for the actual message.
             ws.current.onmessage = (wsMessage) => {
                 console.log(wsMessage);
                 if (wsMessage.data.includes('start')) routeChange('/game');
             };
         }
     });
-    // const Join = (path: string) => {
-    //     CreateGame(gameId).then(() => {
-    //         history.push({
-    //             pathname: path,
-    //             state: {
-    //                 gameID: gameId,
-    //                 player: player,
-    //             },
-    //         });
-    //     });
-    // };
+
     const routeChange = (path: string) => {
         history.push({
             pathname: path,
