@@ -14,7 +14,6 @@ const Lobby = () => {
     const { gameID, player } = state;
     const [gameType, setGameType] = useState('');
     const [readableGameType, setReadableGameType] = useState('');
-    //const  = gameType === 'cricket' ? 'Cricket' : ' 501';
     const [player1, setPlayer1] = useState('');
     const [player2, setPlayer2] = useState('');
     const [ready, setReady] = useState(false);
@@ -38,14 +37,13 @@ const Lobby = () => {
         msg: 'I have connected',
     };
 
-    // need to setup on message functionality and send message after connect
     useEffect(() => {
         if (!ws.current) {
             ws.current = new WebSocket(connURL);
             ws.current.onopen = () => {
                 console.log('ws opened');
                 ws.current?.send(JSON.stringify(connectMessage));
-            }; //will add player to dict on open send message to all connectees
+            };
             ws.current.onmessage = () => {
                 if (!ready) {
                     LobbyState(gameID).then((res) => {
@@ -78,24 +76,13 @@ const Lobby = () => {
 
     useEffect(() => {
         if (ready) {
-            // dont do this, this will just get triggered any time, do a check for the actual message.
             ws.current.onmessage = (wsMessage) => {
                 console.log(wsMessage);
                 if (wsMessage.data.includes('start')) routeChange('/game');
             };
         }
     });
-    // const Join = (path: string) => {
-    //     CreateGame(gameId).then(() => {
-    //         history.push({
-    //             pathname: path,
-    //             state: {
-    //                 gameID: gameId,
-    //                 player: player,
-    //             },
-    //         });
-    //     });
-    // };
+
     const routeChange = (path: string) => {
         history.push({
             pathname: path,
