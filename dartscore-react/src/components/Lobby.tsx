@@ -13,7 +13,8 @@ const Lobby = () => {
     const { state } = useLocation<LobbyProps>();
     const { gameID, player } = state;
     const [gameType, setGameType] = useState('');
-    const readableGameType = gameType === 'cricket' ? 'Cricket' : ' 501';
+    const [readableGameType, setReadableGameType] = useState('');
+    //const  = gameType === 'cricket' ? 'Cricket' : ' 501';
     const [player1, setPlayer1] = useState('');
     const [player2, setPlayer2] = useState('');
     const [ready, setReady] = useState(false);
@@ -22,6 +23,13 @@ const Lobby = () => {
 
     const history = useHistory();
 
+    useEffect(() => {
+        if (gameType) {
+            gameType === 'cricket'
+                ? setReadableGameType('Cricket')
+                : setReadableGameType('501');
+        }
+    }, [gameType]);
     const ws = useRef<WebSocket>();
     const connURL = `wss://cvc7ipmik7.execute-api.us-east-1.amazonaws.com/dev/?game=${gameID}&player=${player}`;
 

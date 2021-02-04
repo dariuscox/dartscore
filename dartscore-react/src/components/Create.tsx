@@ -37,7 +37,9 @@ const Create = () => {
     };
 
     const handleChange = (event: object, newGameType: string) => {
-        setGameType(newGameType);
+        if (newGameType !== null) {
+            setGameType(newGameType);
+        }
     };
 
     return (
