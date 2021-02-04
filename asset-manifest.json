@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/dartscore/static/css/main.4a5e752a.chunk.css",
-    "main.js": "/dartscore/static/js/main.1529c005.chunk.js",
-    "main.js.map": "/dartscore/static/js/main.1529c005.chunk.js.map",
+    "main.js": "/dartscore/static/js/main.0dede74c.chunk.js",
+    "main.js.map": "/dartscore/static/js/main.0dede74c.chunk.js.map",
     "runtime-main.js": "/dartscore/static/js/runtime-main.ee408c09.js",
     "runtime-main.js.map": "/dartscore/static/js/runtime-main.ee408c09.js.map",
-    "static/js/2.1fc2f335.chunk.js": "/dartscore/static/js/2.1fc2f335.chunk.js",
-    "static/js/2.1fc2f335.chunk.js.map": "/dartscore/static/js/2.1fc2f335.chunk.js.map",
+    "static/js/2.4e7994cb.chunk.js": "/dartscore/static/js/2.4e7994cb.chunk.js",
+    "static/js/2.4e7994cb.chunk.js.map": "/dartscore/static/js/2.4e7994cb.chunk.js.map",
     "static/js/3.ff16898c.chunk.js": "/dartscore/static/js/3.ff16898c.chunk.js",
     "static/js/3.ff16898c.chunk.js.map": "/dartscore/static/js/3.ff16898c.chunk.js.map",
     "index.html": "/dartscore/index.html",
     "static/css/main.4a5e752a.chunk.css.map": "/dartscore/static/css/main.4a5e752a.chunk.css.map",
-    "static/js/2.1fc2f335.chunk.js.LICENSE.txt": "/dartscore/static/js/2.1fc2f335.chunk.js.LICENSE.txt",
+    "static/js/2.4e7994cb.chunk.js.LICENSE.txt": "/dartscore/static/js/2.4e7994cb.chunk.js.LICENSE.txt",
     "static/media/index.css": "/dartscore/static/media/PressStart2P-Regular.5f45b521.ttf"
   },
   "entrypoints": [
     "static/js/runtime-main.ee408c09.js",
-    "static/js/2.1fc2f335.chunk.js",
+    "static/js/2.4e7994cb.chunk.js",
     "static/css/main.4a5e752a.chunk.css",
-    "static/js/main.1529c005.chunk.js"
+    "static/js/main.0dede74c.chunk.js"
   ]
 }
