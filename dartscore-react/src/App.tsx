@@ -6,9 +6,6 @@ import Join from './components/Join';
 import Lobby from './components/Lobby';
 import Game from './components/Game';
 import { StylesProvider } from '@material-ui/core/styles';
-
-/* Your component tree.
-      Styled components can override Material-UI's styles. */
 import './App.css';
 
 const App = () => (
