@@ -197,9 +197,9 @@ const Cricket = ({
     const body = (
         <GameTheme>
             <h2 id="simple-modal-title">{winner} Wins!</h2>
-            <p id="simple-modal-description">
+            {/* <p id="simple-modal-description">
                 Start a new game or exit buttons
-            </p>
+            </p> */}
             {player === player1 ? <EndGame /> : null}
         </GameTheme>
     );
