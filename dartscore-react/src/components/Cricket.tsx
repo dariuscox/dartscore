@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
-import { updateCricketState } from 'hooks/updateDartState';
+import Modal from '@material-ui/core/Modal';
+import {
+    updateCricketState,
+    checkWinStateCricket,
+} from 'hooks/updateDartState';
 import {
     handleUpdateGameState,
     useDartGameState,
 } from 'hooks/useDartsGameState';
+import { JoinButton, CreateButton } from 'components/Buttons';
+import { GameTheme } from 'components/Themes';
 
 const CricketTable = styled.table`
     border-collapse: collapse;
@@ -32,6 +38,13 @@ const CricketNumber = styled.td`
     border-right: 3px solid white;
 `;
 
+const WinModal = styled(Modal)`
+    position: 'absolute';
+    width: 400;
+    backgroundcolor: white;
+    border: '2px solid #000';
+`;
+
 type CricketProps = {
     gameID: string;
     player: string;
@@ -49,7 +62,7 @@ const Cricket = ({
     const cricketRows = ['20', '19', '18', '17', '16', '15', 'Bull'];
     const [button, setButton] = useState(false);
     const otherPlayer = player === player1 ? player2 : player1;
-    const [gameState, dispatch] = useDartGameState({
+    const initialState = {
         [player1]: {
             '15': 0,
             '16': 0,
@@ -70,7 +83,9 @@ const Cricket = ({
             Total: 0,
             Bull: 0,
         },
-    });
+    };
+    const [gameState, dispatch] = useDartGameState(initialState);
+    const [winner, setWinner] = useState('');
     const ws = useRef<WebSocket>();
 
     useEffect(() => {
@@ -82,6 +97,9 @@ const Cricket = ({
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
+                    setWinner(
+                        checkWinStateCricket(game_state, player1, player2),
+                    );
                 });
             };
             ws.current.onmessage = (msg) => {
@@ -91,6 +109,9 @@ const Cricket = ({
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
+                    setWinner(
+                        checkWinStateCricket(game_state, player1, player2),
+                    );
                 });
             };
             ws.current.onclose = () => console.log('ws closed');
@@ -122,6 +143,17 @@ const Cricket = ({
             ws.current.send(JSON.stringify(updateMessage));
         });
     };
+
+    const newGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: player,
+        };
+        UpdateGame(gameID, initialState).then(() => {
+            ws.current.send(JSON.stringify(updateMessage));
+        });
+    };
+
     const iconSelection = (score: number) => {
         if (score === 0) {
             return '';
@@ -155,22 +187,54 @@ const Cricket = ({
         );
     };
 
+    const EndGame = () => (
+        <div>
+            <JoinButton onClick={newGame}>New Game</JoinButton>
+            <CreateButton>Exit</CreateButton>
+        </div>
+    );
+
+    const body = (
+        <GameTheme>
+            <h2 id="simple-modal-title">{winner} Wins!</h2>
+            <p id="simple-modal-description">
+                Start a new game or exit buttons
+            </p>
+            {player === player1 ? <EndGame /> : null}
+        </GameTheme>
+    );
+
+    console.log('WINNER');
+    console.log(winner);
     return (
-        <CricketTable>
-            <tbody>
-                <CricketRow>
-                    <CricketHeader>{player1}</CricketHeader>
-                    <CricketHeader>VS</CricketHeader>
-                    <CricketHeader>{player2}</CricketHeader>
-                </CricketRow>
-                {cricketRows.map((segment) => renderCricketRow(segment))}
-                <CricketRow>
-                    <CricketFooter>{gameState[player1]['Total']}</CricketFooter>
-                    <CricketFooter></CricketFooter>
-                    <CricketFooter>{gameState[player2]['Total']}</CricketFooter>
-                </CricketRow>
-            </tbody>
-        </CricketTable>
+        <div>
+            <CricketTable>
+                <tbody>
+                    <CricketRow>
+                        <CricketHeader>{player1}</CricketHeader>
+                        <CricketHeader>VS</CricketHeader>
+                        <CricketHeader>{player2}</CricketHeader>
+                    </CricketRow>
+                    {cricketRows.map((segment) => renderCricketRow(segment))}
+                    <CricketRow>
+                        <CricketFooter>
+                            {gameState[player1]['Total']}
+                        </CricketFooter>
+                        <CricketFooter></CricketFooter>
+                        <CricketFooter>
+                            {gameState[player2]['Total']}
+                        </CricketFooter>
+                    </CricketRow>
+                </tbody>
+            </CricketTable>
+            <WinModal
+                open={winner !== ''}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                {body}
+            </WinModal>
+        </div>
     );
 };
 
