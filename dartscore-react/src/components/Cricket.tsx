@@ -12,6 +12,7 @@ import {
 } from 'hooks/useDartsGameState';
 import { JoinButton, CreateButton } from 'components/Buttons';
 import { GameTheme } from 'components/Themes';
+import { useHistory } from 'react-router-dom';
 
 const CricketTable = styled.table`
     border-collapse: collapse;
@@ -119,6 +120,12 @@ const Cricket = ({
         }
     });
 
+    const history = useHistory();
+
+    const routeChange = (path: string) => {
+        history.push(path);
+    };
+
     const buttonUpdate = (segment: string) => {
         const newGameState = updateCricketState(
             segment,
@@ -183,7 +190,7 @@ const Cricket = ({
     const EndGame = () => (
         <div>
             <JoinButton onClick={newGame}>New Game</JoinButton>
-            <CreateButton>Exit</CreateButton>
+            <CreateButton onClick={() => routeChange('/')}>Exit</CreateButton>
         </div>
     );
 

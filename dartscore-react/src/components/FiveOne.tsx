@@ -16,6 +16,7 @@ import {
 } from 'hooks/useDartsGameState';
 import { JoinButton, CreateButton } from 'components/Buttons';
 import { GameTheme } from 'components/Themes';
+import { useHistory } from 'react-router-dom';
 
 const FiveOneGame = styled.section`
     //add legs
@@ -150,6 +151,13 @@ const FiveOne = ({
             //then my partner sends an update because he updated and i update infinite loop
         }
     });
+
+    const history = useHistory();
+
+    const routeChange = (path: string) => {
+        history.push(path);
+    };
+
     const buttonUpdate = () => {
         if (!score) {
             (document.getElementById('score') as HTMLInputElement).value = '';
@@ -180,7 +188,7 @@ const FiveOne = ({
     const EndGame = () => (
         <div>
             <JoinButton onClick={newGame}>New Game</JoinButton>
-            <CreateButton>Exit</CreateButton>
+            <CreateButton onClick={() => routeChange('/')}>Exit</CreateButton>
         </div>
     );
 
