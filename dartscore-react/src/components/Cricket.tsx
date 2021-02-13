@@ -188,6 +188,7 @@ const Cricket = ({
     };
 
     const EndGame = () => (
+        // gota make sure i notify the other to go back to the home screen
         <div>
             <JoinButton onClick={newGame}>New Game</JoinButton>
             <CreateButton onClick={() => routeChange('/')}>Exit</CreateButton>
