@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
-import Modal from '@material-ui/core/Modal';
+import { WinModal } from 'components/Modals';
 import {
     updateCricketState,
     checkWinStateCricket,
@@ -36,13 +36,6 @@ const CricketNumber = styled.td`
     padding: 10px;
     border-left: 3px solid white;
     border-right: 3px solid white;
-`;
-
-const WinModal = styled(Modal)`
-    position: 'absolute';
-    width: 400;
-    backgroundcolor: white;
-    border: '2px solid #000';
 `;
 
 type CricketProps = {

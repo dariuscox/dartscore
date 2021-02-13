@@ -5,13 +5,17 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
+import { WinModal } from 'components/Modals';
 import { ScoreInput } from 'components/Inputs';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
-import { updateFiveOneState } from 'hooks/updateDartState';
+import { updateFiveOneState, checkWinStateFive } from 'hooks/updateDartState';
 import {
+    FiveOneState,
     handleUpdateGameState,
     useFiveOneState,
 } from 'hooks/useDartsGameState';
+import { JoinButton, CreateButton } from 'components/Buttons';
+import { GameTheme } from 'components/Themes';
 
 const FiveOneGame = styled.section`
     //add legs
@@ -90,13 +94,24 @@ const FiveOne = ({
 
     const [button, setButton] = useState(false);
     const otherPlayer = player === player1 ? player2 : player1;
-    const [gameState, dispatch] = useFiveOneState({
+    const [winner, setWinner] = useState('');
+    const initialState: FiveOneState = {
         [player1]: {
-            Total: 0,
+            Total: 501,
             Moves: [],
         },
         [player2]: {
-            Total: 0,
+            Total: 501,
+            Moves: [],
+        },
+    };
+    const [gameState, dispatch] = useFiveOneState({
+        [player1]: {
+            Total: 501,
+            Moves: [],
+        },
+        [player2]: {
+            Total: 501,
             Moves: [],
         },
     });
@@ -111,6 +126,7 @@ const FiveOne = ({
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
+                    setWinner(checkWinStateFive(game_state, player1, player2));
                 });
             };
             ws.current.onmessage = (msg) => {
@@ -120,6 +136,7 @@ const FiveOne = ({
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
+                    setWinner(checkWinStateFive(game_state, player1, player2));
                 });
             };
             ws.current.onclose = () => console.log('ws closed');
@@ -150,6 +167,33 @@ const FiveOne = ({
             ws.current.send(JSON.stringify(updateMessage));
         });
     };
+    const newGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: player,
+        };
+        UpdateGame(gameID, initialState).then(() => {
+            ws.current.send(JSON.stringify(updateMessage));
+        });
+    };
+
+    const EndGame = () => (
+        <div>
+            <JoinButton onClick={newGame}>New Game</JoinButton>
+            <CreateButton>Exit</CreateButton>
+        </div>
+    );
+
+    const body = (
+        <GameTheme>
+            <h2 id="simple-modal-title">{winner} Wins!</h2>
+            {/* <p id="simple-modal-description">
+                Start a new game or exit buttons
+            </p> */}
+            {player === player1 ? <EndGame /> : null}
+        </GameTheme>
+    );
+
     const renderFiveOneRow = (playerId: string) => {
         var rows = [];
         let moves = gameState[playerId]['Moves'] as number[];
@@ -221,6 +265,13 @@ const FiveOne = ({
                     </FiveOneTable>
                 </FiveOneContainer>
             </FiveOneSection>
+            <WinModal
+                open={winner !== ''}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                {body}
+            </WinModal>
         </FiveOneGame>
     );
 };

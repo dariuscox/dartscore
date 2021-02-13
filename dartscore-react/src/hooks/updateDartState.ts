@@ -99,3 +99,20 @@ export function checkWinStateCricket(
     }
     return '';
 }
+
+export function checkWinStateFive(
+    gameState: FiveOneState,
+    player1: string,
+    player2: string,
+) {
+    console.log('In check winstate');
+    if (gameState[player1]['Total'] === 0) {
+        return player1;
+    }
+
+    if (gameState[player2]['Total'] === 0) {
+        return player2;
+    }
+
+    return '';
+}
