@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
-import { updateCricketState } from 'hooks/updateDartState';
+import { StyledModal, ModalBody } from 'components/Modals';
+import {
+    updateCricketState,
+    checkWinStateCricket,
+} from 'hooks/updateDartState';
 import {
     handleUpdateGameState,
     useDartGameState,
 } from 'hooks/useDartsGameState';
+import { JoinButton, CreateButton } from 'components/Buttons';
+import { useHistory } from 'react-router-dom';
 
 const CricketTable = styled.table`
     border-collapse: collapse;
@@ -49,7 +55,7 @@ const Cricket = ({
     const cricketRows = ['20', '19', '18', '17', '16', '15', 'Bull'];
     const [button, setButton] = useState(false);
     const otherPlayer = player === player1 ? player2 : player1;
-    const [gameState, dispatch] = useDartGameState({
+    const initialState = {
         [player1]: {
             '15': 0,
             '16': 0,
@@ -70,7 +76,24 @@ const Cricket = ({
             Total: 0,
             Bull: 0,
         },
-    });
+    };
+    const [gameState, dispatch] = useDartGameState(initialState);
+    const [winner, setWinner] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    useEffect(() => {
+        if (winner) {
+            handleOpenModal();
+        } else {
+            handleCloseModal();
+        }
+    }, [winner]);
     const ws = useRef<WebSocket>();
 
     useEffect(() => {
@@ -82,15 +105,22 @@ const Cricket = ({
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
+                    setWinner(
+                        checkWinStateCricket(game_state, player1, player2),
+                    );
                 });
             };
             ws.current.onmessage = (msg) => {
-                console.log(msg.data);
-                console.log(!msg.data.includes(player));
+                if (JSON.stringify(msg.data).includes('-END-')) {
+                    routeChange('/');
+                }
                 GetGameState(gameID).then((res) => {
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
+                    setWinner(
+                        checkWinStateCricket(game_state, player1, player2),
+                    );
                 });
             };
             ws.current.onclose = () => console.log('ws closed');
@@ -104,6 +134,12 @@ const Cricket = ({
             //then my partner sends an update because he updated and i update infinite loop
         }
     });
+
+    const history = useHistory();
+
+    const routeChange = (path: string) => {
+        history.push(path);
+    };
 
     const buttonUpdate = (segment: string) => {
         const newGameState = updateCricketState(
@@ -122,6 +158,7 @@ const Cricket = ({
             ws.current.send(JSON.stringify(updateMessage));
         });
     };
+
     const iconSelection = (score: number) => {
         if (score === 0) {
             return '';
@@ -155,22 +192,68 @@ const Cricket = ({
         );
     };
 
+    const newGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: player,
+        };
+        UpdateGame(gameID, initialState).then(() => {
+            ws.current.send(JSON.stringify(updateMessage));
+        });
+    };
+
+    const MenuButtons = () => (
+        <div>
+            <JoinButton onClick={newGame}>New Game</JoinButton>
+            <CreateButton onClick={EndGame}>Exit</CreateButton>
+        </div>
+    );
+
+    const EndGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: '-END-',
+        };
+        ws.current.send(JSON.stringify(updateMessage));
+    };
+
+    const body = (
+        <ModalBody>
+            <h2 id="simple-modal-title">{winner} Wins!</h2>
+            {player === player1 ? <MenuButtons /> : <h3>Waiting on Host</h3>}
+        </ModalBody>
+    );
+
     return (
-        <CricketTable>
-            <tbody>
-                <CricketRow>
-                    <CricketHeader>{player1}</CricketHeader>
-                    <CricketHeader>VS</CricketHeader>
-                    <CricketHeader>{player2}</CricketHeader>
-                </CricketRow>
-                {cricketRows.map((segment) => renderCricketRow(segment))}
-                <CricketRow>
-                    <CricketFooter>{gameState[player1]['Total']}</CricketFooter>
-                    <CricketFooter></CricketFooter>
-                    <CricketFooter>{gameState[player2]['Total']}</CricketFooter>
-                </CricketRow>
-            </tbody>
-        </CricketTable>
+        <div>
+            <CricketTable>
+                <tbody>
+                    <CricketRow>
+                        <CricketHeader>{player1}</CricketHeader>
+                        <CricketHeader>VS</CricketHeader>
+                        <CricketHeader>{player2}</CricketHeader>
+                    </CricketRow>
+                    {cricketRows.map((segment) => renderCricketRow(segment))}
+                    <CricketRow>
+                        <CricketFooter>
+                            {gameState[player1]['Total']}
+                        </CricketFooter>
+                        <CricketFooter></CricketFooter>
+                        <CricketFooter>
+                            {gameState[player2]['Total']}
+                        </CricketFooter>
+                    </CricketRow>
+                </tbody>
+            </CricketTable>
+            <StyledModal
+                open={openModal}
+                onClose={handleCloseModal}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                {body}
+            </StyledModal>
+        </div>
     );
 };
 

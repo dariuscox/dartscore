@@ -5,13 +5,18 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
+import { StyledModal, ModalBody } from 'components/Modals';
 import { ScoreInput } from 'components/Inputs';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
-import { updateFiveOneState } from 'hooks/updateDartState';
+import { updateFiveOneState, checkWinStateFive } from 'hooks/updateDartState';
 import {
+    FiveOneState,
     handleUpdateGameState,
     useFiveOneState,
 } from 'hooks/useDartsGameState';
+import { JoinButton, CreateButton } from 'components/Buttons';
+import { GameTheme } from 'components/Themes';
+import { useHistory } from 'react-router-dom';
 
 const FiveOneGame = styled.section`
     //add legs
@@ -90,16 +95,45 @@ const FiveOne = ({
 
     const [button, setButton] = useState(false);
     const otherPlayer = player === player1 ? player2 : player1;
-    const [gameState, dispatch] = useFiveOneState({
+
+    const initialState: FiveOneState = {
         [player1]: {
-            Total: 0,
+            Total: 501,
             Moves: [],
         },
         [player2]: {
-            Total: 0,
+            Total: 501,
+            Moves: [],
+        },
+    };
+    const [gameState, dispatch] = useFiveOneState({
+        [player1]: {
+            Total: 501,
+            Moves: [],
+        },
+        [player2]: {
+            Total: 501,
             Moves: [],
         },
     });
+
+    const [winner, setWinner] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    useEffect(() => {
+        if (winner) {
+            handleOpenModal();
+        } else {
+            handleCloseModal();
+        }
+    }, [winner]);
+
     const ws = useRef<WebSocket>();
 
     useEffect(() => {
@@ -111,15 +145,18 @@ const FiveOne = ({
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
+                    setWinner(checkWinStateFive(game_state, player1, player2));
                 });
             };
             ws.current.onmessage = (msg) => {
-                console.log(msg.data);
-                console.log(!msg.data.includes(player));
+                if (JSON.stringify(msg.data).includes('-END-')) {
+                    routeChange('/');
+                }
                 GetGameState(gameID).then((res) => {
                     const { game_state } = res;
                     setButton(false);
                     handleUpdateGameState(dispatch)(game_state);
+                    setWinner(checkWinStateFive(game_state, player1, player2));
                 });
             };
             ws.current.onclose = () => console.log('ws closed');
@@ -133,6 +170,13 @@ const FiveOne = ({
             //then my partner sends an update because he updated and i update infinite loop
         }
     });
+
+    const history = useHistory();
+
+    const routeChange = (path: string) => {
+        history.push(path);
+    };
+
     const buttonUpdate = () => {
         if (!score) {
             (document.getElementById('score') as HTMLInputElement).value = '';
@@ -143,13 +187,47 @@ const FiveOne = ({
             game_id: gameID,
             msg: player,
         };
-        console.log('new game state');
-        console.log(newGameState);
         (document.getElementById('score') as HTMLInputElement).value = '';
         UpdateGame(gameID, newGameState).then(() => {
             ws.current.send(JSON.stringify(updateMessage));
         });
     };
+    const newGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: player,
+        };
+        UpdateGame(gameID, initialState).then(() => {
+            ws.current.send(JSON.stringify(updateMessage));
+        });
+    };
+
+    const MenuButtons = () => (
+        <div>
+            <JoinButton onClick={newGame}>New Game</JoinButton>
+            <CreateButton onClick={EndGame}>Exit</CreateButton>
+        </div>
+    );
+
+    const EndGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: '-END-',
+        };
+        ws.current.send(JSON.stringify(updateMessage));
+    };
+
+    const body = (
+        <ModalBody>
+            {winner ? <h2 id="simple-modal-title">{winner} Wins!</h2> : null}
+            {player === player1 ? <MenuButtons /> : <h3>Waiting on Host</h3>}
+        </ModalBody>
+    );
+    const MenuToggle = () => (
+        <div>
+            <CreateButton onClick={handleOpenModal}>Menu</CreateButton>
+        </div>
+    );
     const renderFiveOneRow = (playerId: string) => {
         var rows = [];
         let moves = gameState[playerId]['Moves'] as number[];
@@ -190,38 +268,49 @@ const FiveOne = ({
     };
 
     return (
-        <FiveOneGame>
-            <FiveOneSection>
-                <FiveOneHeader>Scoreboard</FiveOneHeader>
-                <FiveOneContainer>
-                    <FiveOneTable stickyHeader>
-                        <TableBody>{renderFiveOneRow(player1)}</TableBody>
-                    </FiveOneTable>
-                </FiveOneContainer>
-            </FiveOneSection>
-            <FiveOneSection>
-                <FiveOneScore>{gameState[player1]['Total']}</FiveOneScore>
-                <div>
-                    <label>{player1}</label>
-                    {renderInput(player1)}
-                </div>
+        <div>
+            {player === player1 ? <MenuToggle /> : null}
+            <FiveOneGame>
+                <FiveOneSection>
+                    <FiveOneHeader>Scoreboard</FiveOneHeader>
+                    <FiveOneContainer>
+                        <FiveOneTable stickyHeader>
+                            <TableBody>{renderFiveOneRow(player1)}</TableBody>
+                        </FiveOneTable>
+                    </FiveOneContainer>
+                </FiveOneSection>
+                <FiveOneSection>
+                    <FiveOneScore>{gameState[player1]['Total']}</FiveOneScore>
+                    <div>
+                        <label>{player1}</label>
+                        {renderInput(player1)}
+                    </div>
 
-                {/* <PlayerDot></PlayerDot> */}
-            </FiveOneSection>
-            <FiveOneSection>
-                <FiveOneScore>{gameState[player2]['Total']}</FiveOneScore>
-                <label>{player2}</label>
-                {renderInput(player2)}
-            </FiveOneSection>
-            <FiveOneSection>
-                <FiveOneHeader>Scoreboard</FiveOneHeader>
-                <FiveOneContainer>
-                    <FiveOneTable stickyHeader>
-                        <TableBody>{renderFiveOneRow(player2)}</TableBody>
-                    </FiveOneTable>
-                </FiveOneContainer>
-            </FiveOneSection>
-        </FiveOneGame>
+                    {/* <PlayerDot></PlayerDot> */}
+                </FiveOneSection>
+                <FiveOneSection>
+                    <FiveOneScore>{gameState[player2]['Total']}</FiveOneScore>
+                    <label>{player2}</label>
+                    {renderInput(player2)}
+                </FiveOneSection>
+                <FiveOneSection>
+                    <FiveOneHeader>Scoreboard</FiveOneHeader>
+                    <FiveOneContainer>
+                        <FiveOneTable stickyHeader>
+                            <TableBody>{renderFiveOneRow(player2)}</TableBody>
+                        </FiveOneTable>
+                    </FiveOneContainer>
+                </FiveOneSection>
+            </FiveOneGame>
+            <StyledModal
+                open={openModal}
+                onClose={handleCloseModal}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                {body}
+            </StyledModal>
+        </div>
     );
 };
 

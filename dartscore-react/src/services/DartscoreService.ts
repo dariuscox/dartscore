@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { GameState } from 'hooks/useDartsGameState';
+import { GameState, FiveOneState } from 'hooks/useDartsGameState';
 
 axios.defaults.headers.get['Content-Type'] = 'application/json';
 
@@ -48,7 +48,10 @@ export const CreateGame = (game_id: string, game_type: string) => {
         });
 };
 
-export const UpdateGame = (gameID: string, gameState: GameState) => {
+export const UpdateGame = (
+    gameID: string,
+    gameState: GameState | FiveOneState,
+) => {
     let url = `${baseurl}/update`;
 
     return axios
