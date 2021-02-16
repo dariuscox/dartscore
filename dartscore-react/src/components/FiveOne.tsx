@@ -149,8 +149,9 @@ const FiveOne = ({
                 });
             };
             ws.current.onmessage = (msg) => {
-                console.log(msg.data);
-                console.log(!msg.data.includes(player));
+                if (JSON.stringify(msg.data).includes('-END-')) {
+                    routeChange('/');
+                }
                 GetGameState(gameID).then((res) => {
                     const { game_state } = res;
                     setButton(false);
@@ -186,8 +187,6 @@ const FiveOne = ({
             game_id: gameID,
             msg: player,
         };
-        console.log('new game state');
-        console.log(newGameState);
         (document.getElementById('score') as HTMLInputElement).value = '';
         UpdateGame(gameID, newGameState).then(() => {
             ws.current.send(JSON.stringify(updateMessage));
@@ -203,17 +202,25 @@ const FiveOne = ({
         });
     };
 
-    const EndGame = () => (
+    const MenuButtons = () => (
         <div>
             <JoinButton onClick={newGame}>New Game</JoinButton>
-            <CreateButton onClick={() => routeChange('/')}>Exit</CreateButton>
+            <CreateButton onClick={EndGame}>Exit</CreateButton>
         </div>
     );
+
+    const EndGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: '-END-',
+        };
+        ws.current.send(JSON.stringify(updateMessage));
+    };
 
     const body = (
         <ModalBody>
             <h2 id="simple-modal-title">{winner} Wins!</h2>
-            {player === player1 ? <EndGame /> : null}
+            {player === player1 ? <MenuButtons /> : null}
         </ModalBody>
     );
 
