@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
 import { StyledModal, ModalBody } from 'components/Modals';
-import Modal from '@material-ui/core/Modal';
 import {
     updateCricketState,
     checkWinStateCricket,
@@ -12,7 +11,6 @@ import {
     useDartGameState,
 } from 'hooks/useDartsGameState';
 import { JoinButton, CreateButton } from 'components/Buttons';
-import { GameTheme } from 'components/Themes';
 import { useHistory } from 'react-router-dom';
 
 const CricketTable = styled.table`
@@ -81,6 +79,21 @@ const Cricket = ({
     };
     const [gameState, dispatch] = useDartGameState(initialState);
     const [winner, setWinner] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    useEffect(() => {
+        if (winner) {
+            handleOpenModal();
+        } else {
+            handleCloseModal();
+        }
+    }, [winner]);
     const ws = useRef<WebSocket>();
 
     useEffect(() => {
@@ -98,8 +111,9 @@ const Cricket = ({
                 });
             };
             ws.current.onmessage = (msg) => {
-                console.log(msg.data);
-                console.log(!msg.data.includes(player));
+                if (JSON.stringify(msg.data).includes('-END-')) {
+                    routeChange('/');
+                }
                 GetGameState(gameID).then((res) => {
                     const { game_state } = res;
                     setButton(false);
@@ -145,16 +159,6 @@ const Cricket = ({
         });
     };
 
-    const newGame = () => {
-        const updateMessage = {
-            game_id: gameID,
-            msg: player,
-        };
-        UpdateGame(gameID, initialState).then(() => {
-            ws.current.send(JSON.stringify(updateMessage));
-        });
-    };
-
     const iconSelection = (score: number) => {
         if (score === 0) {
             return '';
@@ -188,26 +192,38 @@ const Cricket = ({
         );
     };
 
-    const EndGame = () => (
-        // gota make sure i notify the other to go back to the home screen
+    const newGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: player,
+        };
+        UpdateGame(gameID, initialState).then(() => {
+            ws.current.send(JSON.stringify(updateMessage));
+        });
+    };
+
+    const MenuButtons = () => (
         <div>
             <JoinButton onClick={newGame}>New Game</JoinButton>
-            <CreateButton onClick={() => routeChange('/')}>Exit</CreateButton>
+            <CreateButton onClick={EndGame}>Exit</CreateButton>
         </div>
     );
 
+    const EndGame = () => {
+        const updateMessage = {
+            game_id: gameID,
+            msg: '-END-',
+        };
+        ws.current.send(JSON.stringify(updateMessage));
+    };
+
     const body = (
-        <GameTheme>
+        <ModalBody>
             <h2 id="simple-modal-title">{winner} Wins!</h2>
-            {/* <p id="simple-modal-description">
-                Start a new game or exit buttons
-            </p> */}
-            {player === player1 ? <EndGame /> : null}
-        </GameTheme>
+            {player === player1 ? <MenuButtons /> : <h3>Waiting on Host</h3>}
+        </ModalBody>
     );
 
-    console.log('WINNER');
-    console.log(winner);
     return (
         <div>
             <CricketTable>
@@ -229,13 +245,14 @@ const Cricket = ({
                     </CricketRow>
                 </tbody>
             </CricketTable>
-            <Modal
-                open={winner !== ''}
+            <StyledModal
+                open={openModal}
+                onClose={handleCloseModal}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
             >
                 {body}
-            </Modal>
+            </StyledModal>
         </div>
     );
 };

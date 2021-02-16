@@ -220,7 +220,7 @@ const FiveOne = ({
     const body = (
         <ModalBody>
             <h2 id="simple-modal-title">{winner} Wins!</h2>
-            {player === player1 ? <MenuButtons /> : null}
+            {player === player1 ? <MenuButtons /> : <h3>Waiting on Host</h3>}
         </ModalBody>
     );
 
