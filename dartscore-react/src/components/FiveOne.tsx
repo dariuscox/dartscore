@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
-import { WinModal } from 'components/Modals';
+import { StyledModal, ModalBody } from 'components/Modals';
 import { ScoreInput } from 'components/Inputs';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
 import { updateFiveOneState, checkWinStateFive } from 'hooks/updateDartState';
@@ -95,7 +95,7 @@ const FiveOne = ({
 
     const [button, setButton] = useState(false);
     const otherPlayer = player === player1 ? player2 : player1;
-    const [winner, setWinner] = useState('');
+
     const initialState: FiveOneState = {
         [player1]: {
             Total: 501,
@@ -116,6 +116,24 @@ const FiveOne = ({
             Moves: [],
         },
     });
+
+    const [winner, setWinner] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    useEffect(() => {
+        if (winner) {
+            handleOpenModal();
+        } else {
+            handleCloseModal();
+        }
+    }, [winner]);
+
     const ws = useRef<WebSocket>();
 
     useEffect(() => {
@@ -193,13 +211,10 @@ const FiveOne = ({
     );
 
     const body = (
-        <GameTheme>
+        <ModalBody>
             <h2 id="simple-modal-title">{winner} Wins!</h2>
-            {/* <p id="simple-modal-description">
-                Start a new game or exit buttons
-            </p> */}
             {player === player1 ? <EndGame /> : null}
-        </GameTheme>
+        </ModalBody>
     );
 
     const renderFiveOneRow = (playerId: string) => {
@@ -242,45 +257,48 @@ const FiveOne = ({
     };
 
     return (
-        <FiveOneGame>
-            <FiveOneSection>
-                <FiveOneHeader>Scoreboard</FiveOneHeader>
-                <FiveOneContainer>
-                    <FiveOneTable stickyHeader>
-                        <TableBody>{renderFiveOneRow(player1)}</TableBody>
-                    </FiveOneTable>
-                </FiveOneContainer>
-            </FiveOneSection>
-            <FiveOneSection>
-                <FiveOneScore>{gameState[player1]['Total']}</FiveOneScore>
-                <div>
-                    <label>{player1}</label>
-                    {renderInput(player1)}
-                </div>
+        <div>
+            <FiveOneGame>
+                <FiveOneSection>
+                    <FiveOneHeader>Scoreboard</FiveOneHeader>
+                    <FiveOneContainer>
+                        <FiveOneTable stickyHeader>
+                            <TableBody>{renderFiveOneRow(player1)}</TableBody>
+                        </FiveOneTable>
+                    </FiveOneContainer>
+                </FiveOneSection>
+                <FiveOneSection>
+                    <FiveOneScore>{gameState[player1]['Total']}</FiveOneScore>
+                    <div>
+                        <label>{player1}</label>
+                        {renderInput(player1)}
+                    </div>
 
-                {/* <PlayerDot></PlayerDot> */}
-            </FiveOneSection>
-            <FiveOneSection>
-                <FiveOneScore>{gameState[player2]['Total']}</FiveOneScore>
-                <label>{player2}</label>
-                {renderInput(player2)}
-            </FiveOneSection>
-            <FiveOneSection>
-                <FiveOneHeader>Scoreboard</FiveOneHeader>
-                <FiveOneContainer>
-                    <FiveOneTable stickyHeader>
-                        <TableBody>{renderFiveOneRow(player2)}</TableBody>
-                    </FiveOneTable>
-                </FiveOneContainer>
-            </FiveOneSection>
-            <WinModal
-                open={winner !== ''}
+                    {/* <PlayerDot></PlayerDot> */}
+                </FiveOneSection>
+                <FiveOneSection>
+                    <FiveOneScore>{gameState[player2]['Total']}</FiveOneScore>
+                    <label>{player2}</label>
+                    {renderInput(player2)}
+                </FiveOneSection>
+                <FiveOneSection>
+                    <FiveOneHeader>Scoreboard</FiveOneHeader>
+                    <FiveOneContainer>
+                        <FiveOneTable stickyHeader>
+                            <TableBody>{renderFiveOneRow(player2)}</TableBody>
+                        </FiveOneTable>
+                    </FiveOneContainer>
+                </FiveOneSection>
+            </FiveOneGame>
+            <StyledModal
+                open={openModal}
+                onClose={handleCloseModal}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
             >
                 {body}
-            </WinModal>
-        </FiveOneGame>
+            </StyledModal>
+        </div>
     );
 };
 

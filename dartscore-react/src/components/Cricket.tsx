@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
-import { WinModal } from 'components/Modals';
+import { StyledModal, ModalBody } from 'components/Modals';
+import Modal from '@material-ui/core/Modal';
 import {
     updateCricketState,
     checkWinStateCricket,
@@ -228,13 +229,13 @@ const Cricket = ({
                     </CricketRow>
                 </tbody>
             </CricketTable>
-            <WinModal
+            <Modal
                 open={winner !== ''}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
             >
                 {body}
-            </WinModal>
+            </Modal>
         </div>
     );
 };
