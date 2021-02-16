@@ -219,11 +219,15 @@ const FiveOne = ({
 
     const body = (
         <ModalBody>
-            <h2 id="simple-modal-title">{winner} Wins!</h2>
+            {winner ? <h2 id="simple-modal-title">{winner} Wins!</h2> : null}
             {player === player1 ? <MenuButtons /> : <h3>Waiting on Host</h3>}
         </ModalBody>
     );
-
+    const MenuToggle = () => (
+        <div>
+            <CreateButton onClick={handleOpenModal}>Menu</CreateButton>
+        </div>
+    );
     const renderFiveOneRow = (playerId: string) => {
         var rows = [];
         let moves = gameState[playerId]['Moves'] as number[];
@@ -265,6 +269,7 @@ const FiveOne = ({
 
     return (
         <div>
+            {player === player1 ? <MenuToggle /> : null}
             <FiveOneGame>
                 <FiveOneSection>
                     <FiveOneHeader>Scoreboard</FiveOneHeader>
