@@ -5,6 +5,7 @@ import Create from './components/Create';
 import Join from './components/Join';
 import Lobby from './components/Lobby';
 import Game from './components/Game';
+import MiniGame from './components/MiniGame';
 import { StylesProvider } from '@material-ui/core/styles';
 import './App.css';
 
@@ -18,6 +19,7 @@ const App = () => (
                     <Route path="/create" component={Create} exact />
                     <Route path="/lobby" render={() => <Lobby />} exact />
                     <Route path="/game" component={Game} exact />
+                    <Route path="/minigame" component={MiniGame} exact />
                 </Switch>
             </BrowserRouter>
         }
