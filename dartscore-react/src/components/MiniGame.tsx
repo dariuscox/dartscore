@@ -11,14 +11,20 @@ const GameBackground = styled.div`
     background-image: url(${doge});
     background-size: 700;
 `;
+
 const MiniGame = () => {
     const [buttonLocation, setButtonLocation] = useState([]);
     const [seconds, setSeconds] = useState(30);
     const [active, setActive] = useState(false);
     useEffect(() => {}, []);
-    // const target = {
-
-    // }
+    var posx = (Math.random() * 750).toFixed();
+    var posy = (Math.random() * 550).toFixed();
+    console.log(posx);
+    const StyledButton = styled.button`
+        position: absolute;
+        left: ${posx}px;
+        top: ${posy}px;
+    `;
     useEffect(() => {
         const interval = setInterval(() => {
             if (active) {
@@ -43,7 +49,7 @@ const MiniGame = () => {
                 Start
             </JoinButton>
             <label>{seconds}</label>
-            <GameBackground></GameBackground>
+            <GameBackground>{<StyledButton>dart</StyledButton>}</GameBackground>
         </GameTheme>
     );
 };
