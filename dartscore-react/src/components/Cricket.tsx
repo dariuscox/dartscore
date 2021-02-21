@@ -31,7 +31,7 @@ const CricketFooter = styled.th`
 `;
 
 const CricketRow = styled.tr`
-    height: 70px;
+    height: 40px;
 `;
 
 const CricketNumber = styled.td`
