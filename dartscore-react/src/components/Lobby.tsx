@@ -128,7 +128,7 @@ const Lobby = () => {
             </div>
             <div>
                 <h3>{player1}</h3>
-                <h3>{player2}</h3>
+                {player2 ? <h3>{player2}</h3> : <h3>Waiting For Opponent</h3>}
             </div>
             {playButton ? <PlayButton /> : null}
         </HomeTheme>
