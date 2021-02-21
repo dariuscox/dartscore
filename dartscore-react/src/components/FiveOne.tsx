@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import { StyledModal, ModalBody } from 'components/Modals';
 import { ScoreInput, JoinInput } from 'components/Inputs';
+import { PlayerDot } from 'components/Themes';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
 import { updateFiveOneState, checkWinStateFive } from 'hooks/updateDartState';
 import {
@@ -32,13 +33,6 @@ const FiveOneGame = styled.section`
     color: white;
 `;
 
-const PlayerDot = styled.span`
-    height: 20px;
-    width: 20px;
-    background-color: #2adcc4;
-    border-radius: 50%;
-    display: inline-block;
-`;
 const Scoreboard = styled.div`
     justify-content: center;
     display: flex;

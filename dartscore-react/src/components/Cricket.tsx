@@ -11,11 +11,13 @@ import {
     useDartGameState,
 } from 'hooks/useDartsGameState';
 import { JoinButton, CreateButton } from 'components/Buttons';
+import { PlayerDot } from 'components/Themes';
 import { useHistory } from 'react-router-dom';
 
 const CricketTable = styled.table`
     border-collapse: collapse;
-    width: 100%;
+    width: 50vw;
+    table-layout: fixed;
 `;
 
 const CricketHeader = styled.th`
@@ -178,14 +180,14 @@ const Cricket = ({
             <CricketRow>
                 <td>{iconSelection(gameState[player1][segment])}</td>
                 <CricketNumber>
-                    <button
+                    <JoinButton
                         onClick={() => {
                             buttonUpdate(segment);
                             setButton(true);
                         }}
                     >
                         {segment}
-                    </button>
+                    </JoinButton>
                 </CricketNumber>
                 <td>{iconSelection(gameState[player2][segment])}</td>
             </CricketRow>
@@ -219,19 +221,33 @@ const Cricket = ({
 
     const body = (
         <ModalBody>
-            <h2 id="simple-modal-title">{winner} Wins!</h2>
+            {winner ? <h2 id="simple-modal-title">{winner} Wins!</h2> : null}
             {player === player1 ? <MenuButtons /> : <h3>Waiting on Host</h3>}
         </ModalBody>
+    );
+    const MenuToggle = () => (
+        <div>
+            <CreateButton onClick={handleOpenModal}>Menu</CreateButton>
+        </div>
     );
 
     return (
         <div>
+            {player === player1 ? <MenuToggle /> : null}
             <CricketTable>
                 <tbody>
                     <CricketRow>
-                        <CricketHeader>{player1}</CricketHeader>
+                        <CricketHeader>
+                            {player1}
+                            {`\u00a0`}
+                            {player === player1 ? <PlayerDot /> : null}
+                        </CricketHeader>
                         <CricketHeader>VS</CricketHeader>
-                        <CricketHeader>{player2}</CricketHeader>
+                        <CricketHeader>
+                            {player2}
+                            {`\u00a0`}
+                            {player === player2 ? <PlayerDot /> : null}
+                        </CricketHeader>
                     </CricketRow>
                     {cricketRows.map((segment) => renderCricketRow(segment))}
                     <CricketRow>

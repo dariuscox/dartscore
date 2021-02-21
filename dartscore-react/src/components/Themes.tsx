@@ -36,3 +36,11 @@ export const JoinTheme = styled.section`
     font-size: calc(10px + 2vmin);
     color: white;
 `;
+
+export const PlayerDot = styled.span`
+    height: 20px;
+    width: 20px;
+    background-color: #2adcc4;
+    border-radius: 50%;
+    display: inline-block;
+`;
