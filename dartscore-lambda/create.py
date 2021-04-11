@@ -18,7 +18,7 @@ def _get_allowed_origin(event):
     origin = event.get("headers", {}).get("origin", None)
     logger.info("Origin is: %s", origin)
 
-    if origin and (origin == 'https://www.danielcox.software' or origin == 'http://localhost:3000'):
+    if origin and (origin == 'https://www.dartscore.app' or origin == 'http://localhost:3000'):
         return origin
 
     return None
