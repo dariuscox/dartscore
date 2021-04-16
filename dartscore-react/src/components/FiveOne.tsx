@@ -6,7 +6,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import { StyledModal, ModalBody } from 'components/Modals';
-import { ScoreInput } from 'components/Inputs';
+import { ScoreInput, JoinInput } from 'components/Inputs';
+import { PlayerDot } from 'components/Themes';
 import { UpdateGame, GetGameState } from 'services/DartscoreService';
 import { updateFiveOneState, checkWinStateFive } from 'hooks/updateDartState';
 import {
@@ -15,7 +16,6 @@ import {
     useFiveOneState,
 } from 'hooks/useDartsGameState';
 import { JoinButton, CreateButton } from 'components/Buttons';
-import { GameTheme } from 'components/Themes';
 import { useHistory } from 'react-router-dom';
 
 const FiveOneGame = styled.section`
@@ -24,7 +24,7 @@ const FiveOneGame = styled.section`
     background-color: #252525;
     justify-content: center;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     min-height: 50vh;
     align-items: center;
     font-size: calc(10px + 2vmin);
@@ -33,19 +33,22 @@ const FiveOneGame = styled.section`
     color: white;
 `;
 
-const PlayerDot = styled.span`
-    height: 25px;
-    width: 25px;
-    background-color: green;
-    border-radius: 50%;
-    display: inline-block;
+const Scoreboard = styled.div`
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
 `;
-
-const FiveOneSection = styled.section`
+const PlayerInfo = styled.div`
+    justify-content: center;
     display: flex;
     flex-direction: column;
-    padding: 10px;
 `;
+
+const Divider = styled.div`
+    border-left: 6px solid #9d74d3;
+    height: auto;
+`;
+
 const FiveOneScore = styled.label`
     padding: 40px;
     font-size: calc(150px + 2vmin);
@@ -248,59 +251,65 @@ const FiveOne = ({
             }
         }
     };
-    const renderInput = (playerId: string) => {
+    const renderInput = () => {
         // can add functionality to only allow scroe if its players turn
-        if (playerId === player) {
-            return (
-                <div>
-                    <ScoreInput
-                        placeholder="Score"
-                        id="score"
-                        onChange={(event) =>
-                            setTextScore(event.target.value.toUpperCase())
-                        }
-                        onKeyDown={(event) => handleScoreInput(event)}
-                    />
-                    <button onClick={buttonUpdate}>submit</button>
-                </div>
-            );
-        }
+        return (
+            <div>
+                <JoinInput
+                    placeholder="INPUT SCORE"
+                    id="score"
+                    onChange={(event) =>
+                        setTextScore(event.target.value.toUpperCase())
+                    }
+                    onKeyDown={(event) => handleScoreInput(event)}
+                />
+                <JoinButton onClick={buttonUpdate}>submit</JoinButton>
+            </div>
+        );
     };
 
     return (
         <div>
             {player === player1 ? <MenuToggle /> : null}
             <FiveOneGame>
-                <FiveOneSection>
-                    <FiveOneHeader>Scoreboard</FiveOneHeader>
-                    <FiveOneContainer>
-                        <FiveOneTable stickyHeader>
-                            <TableBody>{renderFiveOneRow(player1)}</TableBody>
-                        </FiveOneTable>
-                    </FiveOneContainer>
-                </FiveOneSection>
-                <FiveOneSection>
-                    <FiveOneScore>{gameState[player1]['Total']}</FiveOneScore>
-                    <div>
-                        <label>{player1}</label>
-                        {renderInput(player1)}
-                    </div>
-
-                    {/* <PlayerDot></PlayerDot> */}
-                </FiveOneSection>
-                <FiveOneSection>
-                    <FiveOneScore>{gameState[player2]['Total']}</FiveOneScore>
-                    <label>{player2}</label>
-                    {renderInput(player2)}
-                </FiveOneSection>
-                <FiveOneSection>
-                    <FiveOneHeader>Scoreboard</FiveOneHeader>
-                    <FiveOneContainer>
-                        <FiveOneTable stickyHeader>
-                            <TableBody>{renderFiveOneRow(player2)}</TableBody>
-                        </FiveOneTable>
-                    </FiveOneContainer>
-                </FiveOneSection>
+                {renderInput()}
+                <Scoreboard>
+                    <PlayerInfo>
+                        <FiveOneScore>
+                            {gameState[player1]['Total']}
+                        </FiveOneScore>
+                        <div>
+                            <label>{player1}</label>{' '}
+                            {player === player1 ? <PlayerDot /> : null}
+                        </div>
+                        <FiveOneHeader>Scores</FiveOneHeader>
+                        <FiveOneContainer>
+                            <FiveOneTable stickyHeader>
+                                <TableBody>
+                                    {renderFiveOneRow(player1)}
+                                </TableBody>
+                            </FiveOneTable>
+                        </FiveOneContainer>
+                    </PlayerInfo>
+                    <Divider></Divider>
+                    <PlayerInfo>
+                        <FiveOneScore>
+                            {gameState[player2]['Total']}
+                        </FiveOneScore>
+                        <div>
+                            <label>{player2}</label>{' '}
+                            {player === player2 ? <PlayerDot /> : null}
+                        </div>
+                        <FiveOneHeader>Scores</FiveOneHeader>
+                        <FiveOneContainer>
+                            <FiveOneTable stickyHeader>
+                                <TableBody>
+                                    {renderFiveOneRow(player2)}
+                                </TableBody>
+                            </FiveOneTable>
+                        </FiveOneContainer>
+                    </PlayerInfo>
+                </Scoreboard>
             </FiveOneGame>
             <StyledModal
                 open={openModal}

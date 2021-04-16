@@ -1,6 +1,6 @@
 {
     "name": "dartscore",
-    "homepage": "https://dartscore.app",
+    "homepage": ".",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
