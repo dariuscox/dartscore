@@ -15,7 +15,13 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('dartscore')
 
 def _get_allowed_origin(event):
-    origin = event.get("headers", {}).get("origin", None)
+    headers = event.get("headers", {})
+    origin = None
+    if headers:
+        for header in headers:
+            if header.lower() == "origin":
+                origin = headers[header]
+
     logger.info("Origin is: %s", origin)
 
     if origin and (origin == 'https://www.dartscore.app' or origin == 'http://localhost:3000'):
